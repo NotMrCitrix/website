@@ -1,0 +1,27 @@
+name: Update List
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # This will run the workflow every 10 minutes
+  workflow_dispatch:
+
+jobs:
+  update-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Fetch File
+        run: curl -o list.txt https://a.dove.isdumb.one/list.txt
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add list.txt
+          git commit -m 'Update list.txt'
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
