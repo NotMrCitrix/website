@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: main  # Ensure you are checking out the main branch
 
@@ -36,9 +36,11 @@ jobs:
           cat $FILE_NAME  # Print the updated file content for debugging
 
       - name: Commit and push changes
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add ${{ github.event.inputs.file_name }}
           git commit -m "Update ${{ github.event.inputs.file_name }} with content from ${{ github.event.inputs.content_url }}"
-          git push origin main
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git main
