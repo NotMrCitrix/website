@@ -66,11 +66,24 @@
             background-color: #dc3545;
             color: white;
         }
+        .token-container {
+            margin: 20px;
+        }
+        .token-container input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 300px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Updated GenP host file</h1>
+        <div class="token-container">
+            <input type="password" id="github-token" placeholder="Enter your GitHub API token">
+        </div>
         <button id="download-button">F*ck Adobe</button>
         <button id="update-button">Update Host File</button>
         <div id="loader"></div>
@@ -89,10 +102,11 @@
         });
 
         document.getElementById('update-button').addEventListener('click', function() {
-            const githubToken = prompt('Enter your GitHub API token:', '');
+            const githubToken = document.getElementById('github-token').value;
             if (githubToken) {
+                console.log('Token entered:', githubToken); // Debug log
                 document.getElementById('loader').style.display = 'block';
-                fetch('https://api.github.com/repos/NotMrCitrix/website2/actions/workflows/manual-trigger.yml/dispatches', {
+                fetch('https://api.github.com/repos/NotMrCitrix/website2/actions/workflows/62501131/dispatches', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${githubToken}`,
@@ -101,16 +115,18 @@
                     },
                     body: JSON.stringify({ ref: 'main' })
                 })
-                .then(response => response.json())
-                .then(data => {
+                .then(response => {
                     document.getElementById('loader').style.display = 'none';
                     const alert = document.getElementById('alert');
+                    console.log('Response status:', response.status); // Debug log
                     if (response.ok) {
                         alert.textContent = 'Workflow triggered successfully!';
                         alert.className = 'alert alert-success';
                     } else {
-                        alert.textContent = `Failed to trigger workflow: ${data.message}`;
-                        alert.className = 'alert alert-error';
+                        return response.json().then(data => {
+                            alert.textContent = `Failed to trigger workflow: ${data.message}`;
+                            alert.className = 'alert alert-error';
+                        });
                     }
                     alert.style.display = 'block';
                 })
@@ -121,6 +137,8 @@
                     alert.className = 'alert alert-error';
                     alert.style.display = 'block';
                 });
+            } else {
+                alert('Please enter your GitHub API token.');
             }
         });
     </script>
