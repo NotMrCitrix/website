@@ -3,21 +3,42 @@ name: Manual Trigger Workflow
 on:
   workflow_dispatch:
     inputs:
+      content_url:
+        description: 'URL of the content to fetch'
+        required: true
+        default: 'https://raw.githubusercontent.com/ignaciocastro/a-dove-is-dumb/main/list.txt'
       file_name:
-        description: 'Name of the file to download'
+        description: 'Name of the file to update'
         required: true
         default: 'hosts'
 
 jobs:
-  fetch-and-create-file:
+  fetch-and-update-file:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: main  # Ensure you are checking out the main branch
 
-      - name: Fetch content from GitHub and create file
+      - name: Fetch content from URL
+        id: fetch_content
+        run: |
+          CONTENT_URL=${{ github.event.inputs.content_url }}
+          curl -o temp_file.txt $CONTENT_URL
+          cat temp_file.txt  # Print the fetched content for debugging
+
+      - name: Update file in repository
         run: |
           FILE_NAME=${{ github.event.inputs.file_name }}
-          curl -o $FILE_NAME https://raw.githubusercontent.com/ignaciocastro/a-dove-is-dumb/main/list.txt
-          echo "Downloaded content from GitHub and saved it as $FILE_NAME"
+          mv temp_file.txt $FILE_NAME
+          cat $FILE_NAME  # Print the updated file content for debugging
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add ${{ github.event.inputs.file_name }}
+          git commit -m "Update ${{ github.event.inputs.file_name }} with content from ${{ github.event.inputs.content_url }}"
+          git push origin main
