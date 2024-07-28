@@ -3,101 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Updated GenP Host File</title>
+    <title>Updated GenP host file</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #FFFFFF;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
         }
         button {
-            padding: 15px 30px;
-            font-size: 1em;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            margin: 10px;
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        #download-button {
-            background-color: #d32f2f;
-            color: white;
-        }
-        #update-button {
-            background-color: #388e3c;
-            color: white;
-        }
-        button:hover {
-            transform: scale(1.05);
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Updated GenP Host File</h1>
-    <button id="download-button">f*ck Adobe</button>
+    <h1>Updated GenP host file</h1>
     <button id="update-button">Update Host File</button>
 
     <script>
-        document.getElementById('download-button').addEventListener('click', function() {
-            const rawFileUrl = 'https://raw.githubusercontent.com/NotMrCitrix/website2/main/hosts';
-
-            fetch(rawFileUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                    const blob = new Blob([text], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'hosts';
-                    a.click();
-                    URL.revokeObjectURL(url);
-                })
-                .catch(error => {
-                    console.error('Error fetching the text file:', error);
-                    alert('Error fetching the text file');
-                });
-        });
-
         document.getElementById('update-button').addEventListener('click', function() {
-            const token = prompt('Enter your GitHub API token:');
-            if (token) {
-                const owner = 'NotMrCitrix';
-                const repo = 'website2';
-                const workflow_id = 'automatic-update.yml';
-
-                fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow_id}/dispatches`, {
+            const code = prompt('Enter the code to update the host file:');
+            if (code === '98753citrix') {
+                fetch('https://nodejserver1.onrender.com/trigger-action', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github.v3+json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        ref: 'main'
-                    })
+                    body: JSON.stringify({ code: code })
                 })
-                .then(response => {
-                    if (response.ok) {
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message === 'Workflow triggered successfully!') {
                         alert('Workflow triggered successfully!');
                     } else {
-                        response.json().then(data => {
-                            alert('Failed to trigger workflow: ' + data.message);
-                        });
+                        alert(`Failed to trigger workflow: ${data.message}`);
                     }
                 })
                 .catch(error => {
@@ -105,7 +46,7 @@
                     alert('Error triggering workflow');
                 });
             } else {
-                alert('No API token entered');
+                alert('Incorrect code');
             }
         });
     </script>
