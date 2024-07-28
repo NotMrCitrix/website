@@ -14,58 +14,47 @@
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            margin: 10px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <h1>Updated GenP host file</h1>
-    <button id="download-button">F*ck Adobe</button>
     <button id="update-button">Update Host File</button>
 
     <script>
-        document.getElementById('download-button').addEventListener('click', function() {
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = './hosts';
-            a.download = 'hosts';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(a.href);
-        });
-
         document.getElementById('update-button').addEventListener('click', function() {
             const code = prompt('Enter the code to update the host file:');
             if (code === '98753citrix') {
-                fetch('https://nodejserver1.onrender.com/get-api-key')
-                    .then(response => response.json())
-                    .then(data => {
-                        const apiKey = data.apiKey;
-                        return fetch('https://api.github.com/repos/NotMrCitrix/website2/actions/workflows/manual-trigger.yml/dispatches', {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `token ${apiKey}`,
-                                'Accept': 'application/vnd.github.v3+json',
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                ref: 'main'
-                            })
+                const token = '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';
+                const owner = 'NotMrCitrix';
+                const repo = 'website2';
+                const workflow_id = 'automatic-update.yml';
+
+                fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow_id}/dispatches`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ref: 'main'
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Workflow triggered successfully!');
+                    } else {
+                        response.json().then(data => {
+                            alert('Failed to trigger workflow: ' + data.message);
                         });
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('Workflow triggered successfully!');
-                        } else {
-                            response.json().then(data => {
-                                alert(`Failed to trigger workflow: ${data.message}`);
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error triggering workflow');
-                    });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error triggering workflow');
+                });
             } else {
                 alert('Incorrect code');
             }
