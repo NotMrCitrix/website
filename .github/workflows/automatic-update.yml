@@ -2,7 +2,7 @@ name: Automatic Update Workflow
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Runs every minute
+    - cron: '*/6 * * * *'  # Runs every 6 minutes
   workflow_dispatch:  # Allows manual triggering as well
 
 jobs:
@@ -20,6 +20,10 @@ jobs:
           CONTENT_URL='https://raw.githubusercontent.com/ignaciocastro/a-dove-is-dumb/main/list.txt'
           echo "Fetching content from $CONTENT_URL"
           curl -o temp_file.txt $CONTENT_URL
+          if [ $? -ne 0 ]; then
+            echo "Error fetching content"
+            exit 1
+          fi
           cat temp_file.txt  # Print the fetched content for debugging
 
       - name: Update file in repository
@@ -28,15 +32,29 @@ jobs:
           FILE_NAME='hosts'
           echo "Updating file $FILE_NAME"
           mv temp_file.txt $FILE_NAME
+          if [ $? -ne 0 ]; then
+            echo "Error moving file"
+            exit 1
+          fi
           cat $FILE_NAME  # Print the updated file content for debugging
 
-      - name: Commit and push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check for changes
         run: |
           set -e  # Exit on error
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add $FILE_NAME
-          git commit -m "Update $FILE_NAME with content from $CONTENT_URL"
+          git status
+          git diff-index --quiet HEAD || git commit -m "Update $FILE_NAME with content from $CONTENT_URL"
+
+      - name: Push changes
+        if: success()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e  # Exit on error
           git push origin main
+          if [ $? -ne 0 ]; then
+            echo "Error pushing changes"
+            exit 1
+          fi
