@@ -7,56 +7,84 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             text-align: center;
-            margin-top: 50px;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        h1 {
+            color: #333;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            margin-top: 20px;
+        }
+        #download-button {
+            background-color: #007bff;
+            color: white;
+        }
+        #update-button {
+            background-color: #28a745;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <h1>Updated GenP host file</h1>
-    <button id="update-button">Update Host File</button>
+    <div class="container">
+        <h1>Updated GenP host file</h1>
+        <button id="download-button">F*ck Adobe</button>
+        <button id="update-button">Update Host File</button>
+    </div>
 
     <script>
+        document.getElementById('download-button').addEventListener('click', function() {
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = './hosts';
+            a.download = 'hosts';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(a.href);
+        });
+
         document.getElementById('update-button').addEventListener('click', function() {
             const code = prompt('Enter the code to update the host file:');
             if (code === '98753citrix') {
-                const token = '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';
-                const owner = 'NotMrCitrix';
-                const repo = 'website2';
-                const workflow_id = 'automatic-update.yml';
-
-                fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflow_id}/dispatches`, {
+                const githubToken = prompt('Enter your GitHub API token:');
+                fetch('https://api.github.com/repos/NotMrCitrix/website2/actions/workflows/manual-trigger.yml/dispatches', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        'Authorization': `Bearer ${githubToken}`,
                         'Accept': 'application/vnd.github.v3+json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        ref: 'main'
-                    })
+                    body: JSON.stringify({ ref: 'main' })
                 })
                 .then(response => {
                     if (response.ok) {
                         alert('Workflow triggered successfully!');
                     } else {
                         response.json().then(data => {
-                            alert('Failed to trigger workflow: ' + data.message);
+                            alert(`Failed to trigger workflow: ${data.message}`);
                         });
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error triggering workflow');
+                    alert(`Error triggering workflow: ${error}`);
                 });
             } else {
-                alert('Incorrect code');
+                alert('Incorrect code.');
             }
         });
     </script>
