@@ -1,0 +1,28 @@
+name: Manual Trigger Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      content_url:
+        description: 'URL of the content to fetch'
+        required: true
+        default: 'https://a.dove.isdumb.one/list.txt'
+      file_name:
+        description: 'Name of the file to download'
+        required: true
+        default: 'hosts'
+
+jobs:
+  fetch-and-create-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Fetch content and create file
+        run: |
+          CONTENT_URL=${{ github.event.inputs.content_url }}
+          FILE_NAME=${{ github.event.inputs.file_name }}
+          curl -o $FILE_NAME $CONTENT_URL
+          echo "Downloaded content from $CONTENT_URL and saved it as $FILE_NAME"
