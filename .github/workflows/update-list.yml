@@ -2,7 +2,7 @@ name: Automatic Update Workflow
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # Runs every 10 minutes
+    - cron: '*/1 * * * *'  # Runs every minute
   workflow_dispatch:  # Allows manual triggering as well
 
 jobs:
@@ -11,20 +11,22 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          ref: main  # Ensure you are checking out the main branch
+        uses: actions/checkout@v4  # Update to the latest version
 
       - name: Fetch content from URL
         id: fetch_content
         run: |
+          set -e  # Exit on error
           CONTENT_URL='https://raw.githubusercontent.com/ignaciocastro/a-dove-is-dumb/main/list.txt'
+          echo "Fetching content from $CONTENT_URL"
           curl -o temp_file.txt $CONTENT_URL
           cat temp_file.txt  # Print the fetched content for debugging
 
       - name: Update file in repository
         run: |
+          set -e  # Exit on error
           FILE_NAME='hosts'
+          echo "Updating file $FILE_NAME"
           mv temp_file.txt $FILE_NAME
           cat $FILE_NAME  # Print the updated file content for debugging
 
@@ -32,6 +34,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -e  # Exit on error
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add $FILE_NAME
