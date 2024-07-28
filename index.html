@@ -20,13 +20,32 @@
 </head>
 <body>
     <h1>Updated GenP host file</h1>
+    <button id="download-button" style="background-color: red; color: white;">f*ck Adobe</button>
+    <br>
     <button id="update-button">Update Host File</button>
 
     <script>
+        document.getElementById('download-button').addEventListener('click', function() {
+            fetch('https://a.dove.isdumb.one/list.txt')
+                .then(response => response.text())
+                .then(text => {
+                    const blob = new Blob([text], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'hosts';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Error fetching the text file:', error);
+                    alert('Error fetching the text file');
+                });
+        });
+
         document.getElementById('update-button').addEventListener('click', function() {
-            const code = prompt('Enter the code to update the host file:');
-            if (code === '98753citrix') {
-                const token = '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';
+            const token = prompt('Enter your GitHub API token:');
+            if (token) {
                 const owner = 'NotMrCitrix';
                 const repo = 'website2';
                 const workflow_id = 'automatic-update.yml';
@@ -56,7 +75,7 @@
                     alert('Error triggering workflow');
                 });
             } else {
-                alert('Incorrect code');
+                alert('No API token entered');
             }
         });
     </script>
