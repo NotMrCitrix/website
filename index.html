@@ -68,6 +68,7 @@
         }
         .token-container {
             margin: 20px;
+            display: none;
         }
         .token-container input {
             padding: 10px;
@@ -81,7 +82,7 @@
 <body>
     <div class="container">
         <h1>Updated GenP host file</h1>
-        <div class="token-container">
+        <div class="token-container" id="token-container">
             <input type="password" id="github-token" placeholder="Enter your GitHub API token">
         </div>
         <button id="download-button">F*ck Adobe</button>
@@ -91,6 +92,8 @@
     </div>
 
     <script>
+        let updateClicked = false;
+
         document.getElementById('download-button').addEventListener('click', function() {
             const a = document.createElement('a');
             a.style.display = 'none';
@@ -102,11 +105,16 @@
         });
 
         document.getElementById('update-button').addEventListener('click', function() {
+            const tokenContainer = document.getElementById('token-container');
             const githubToken = document.getElementById('github-token').value;
-            if (githubToken) {
+
+            if (!updateClicked) {
+                tokenContainer.style.display = 'block';
+                updateClicked = true;
+            } else if (githubToken) {
                 console.log('Token entered:', githubToken); // Debug log
                 document.getElementById('loader').style.display = 'block';
-                fetch('https://api.github.com/repos/NotMrCitrix/website2/actions/workflows/62501131/dispatches', {
+                fetch('https://api.github.com/repos/NotMrCitrix/website2/actions/workflows/manual-trigger.yml/dispatches', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${githubToken}`,
@@ -137,6 +145,8 @@
                     alert.className = 'alert alert-error';
                     alert.style.display = 'block';
                 });
+                tokenContainer.style.display = 'none';
+                updateClicked = false;
             } else {
                 alert('Please enter your GitHub API token.');
             }
