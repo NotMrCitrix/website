@@ -3,25 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Updated GenP host file</title>
+    <title>Updated GenP Host File</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
         }
         button {
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 15px 30px;
+            font-size: 1em;
             cursor: pointer;
-            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        #download-button {
+            background-color: #d32f2f;
+            color: white;
+        }
+        #update-button {
+            background-color: #388e3c;
+            color: white;
+        }
+        button:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-    <h1>Updated GenP host file</h1>
-    <button id="download-button" style="background-color: red; color: white;">f*ck Adobe</button>
-    <br>
+    <h1>Updated GenP Host File</h1>
+    <button id="download-button">f*ck Adobe</button>
     <button id="update-button">Update Host File</button>
 
     <script>
