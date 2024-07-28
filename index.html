@@ -54,7 +54,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('status').innerText = 'Fetching text...';
 
-            fetch('https://cors-anywhere.herokuapp.com/https://a.dove.isdumb.one/list.txt')
+            fetch('https://api.allorigins.win/raw?url=https://a.dove.isdumb.one/list.txt')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Network response was not ok: ${response.statusText} (${response.status})`);
