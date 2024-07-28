@@ -26,8 +26,15 @@
 
     <script>
         document.getElementById('download-button').addEventListener('click', function() {
-            fetch('https://a.dove.isdumb.one/list.txt')
-                .then(response => response.text())
+            const rawFileUrl = 'https://raw.githubusercontent.com/NotMrCitrix/website2/main/hosts';
+
+            fetch(rawFileUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
                 .then(text => {
                     const blob = new Blob([text], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
