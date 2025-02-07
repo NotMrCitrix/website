@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Funny Stuff - 100% Safe & Real</title>
+  <style>
+    :root {
+      --main-color: pink; /* Default main color */
+    }
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none; /* Hide default cursor */
+    }
+    
+    /* Custom Cursor */
+    .custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 20px;
+      height: 20px;
+      background: var(--main-color);
+      border: 2px solid #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease-out, background 0.2s;
+      z-index: 10000;
+    }
+    
+    /* Water Splash Animation */
+    @keyframes splash {
+      0% {
+        transform: scale(0);
+        opacity: 0.7;
+      }
+      100% {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+    .water-splash {
+      position: absolute;
+      border: 2px solid var(--main-color);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: splash 0.6s ease-out forwards;
+      z-index: 9999;
+    }
+    
+    /* Header Section */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 2rem 1rem;
+      background: linear-gradient(45deg, #1f1f1f, #2a2a2a);
+      overflow: hidden;
+    }
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+    header p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .btn {
+      background-color: var(--main-color);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 0px 15px var(--main-color);
+    }
+    
+    /* Sections */
+    section {
+      padding: 3rem 1rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 2rem;
+    }
+    .feature {
+      background: #1e1e1e;
+      padding: 1.5rem;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+    .feature:hover {
+      transform: translateY(-10px);
+      background-color: #2a2a2a;
+    }
+    .feature h3 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+    }
+    .feature p {
+      font-size: 1rem;
+      color: #ccc;
+    }
+    
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: #1f1f1f;
+      position: relative;
+    }
+    
+    /* Color Selector Styles */
+    #colorSelectorContainer {
+      margin-top: 1rem;
+    }
+    #colorSelectorContainer label {
+      margin-right: 0.5rem;
+      font-size: 0.9rem;
+    }
+    #colorSelector {
+      padding: 0.3rem 0.5rem;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 5px;
+      background-color: #fff;
+      color: var(--main-color);
+      cursor: pointer;
+      transition: color 0.3s ease, background-color 0.3s ease;
+    }
+    #colorSelector:focus {
+      outline: none;
+    }
+    
+    /* Custom Animations */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+    .floating {
+      animation: float 4s ease-in-out infinite;
+    }
+    
+    /* Drifting particles in the header */
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--main-color);
+      border-radius: 50%;
+      animation: drift 5s linear infinite;
+      opacity: 0.7;
+    }
+    @keyframes drift {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(50px, 50px); }
+      100% { transform: translate(0, 0); }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .features {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor Element -->
+  <div class="custom-cursor" id="customCursor"></div>
+  
+  <!-- Header with custom particle effects and floating title -->
+  <header>
+    <div class="particle" style="top:10%; left:20%; animation-duration:6s;"></div>
+    <div class="particle" style="top:30%; left:70%; animation-duration:4s;"></div>
+    <div class="particle" style="top:50%; left:40%; animation-duration:5s;"></div>
+    <div class="particle" style="top:20%; left:80%; animation-duration:7s;"></div>
+    <h1 class="floating">Funny Stuff</h1>
+    <p>The 100% safe & real drink that will tickle your taste buds!</p>
+    <button class="btn">Try Now</button>
+  </header>
+  
+  <!-- Features Section -->
+  <section>
+    <h2 style="text-align: center; margin-bottom: 2rem;">Why Choose Funny Stuff?</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>100% Safe</h3>
+        <p>Tested and proven to be completely safe for consumption.</p>
+      </div>
+      <div class="feature">
+        <h3>Real Taste</h3>
+        <p>Experience an authentic flavor that leaves you wanting more.</p>
+      </div>
+      <div class="feature">
+        <h3>Innovative Design</h3>
+        <p>Funny Stuff changed the game by merging safety with an irresistible, delicious flavor and a revolutionary design that redefines the drink industry.</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Testimonials Section -->
+  <section style="background-color: #1a1a1a; border-radius: 10px;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">What People Are Saying</h2>
+    <p style="text-align: center; padding: 0 1rem;">
+      "Funny Stuff is safe, delicious, and its innovative approach truly changed the game. The cool animations on their website perfectly capture the refreshing vibe of the drink." - A Satisfied Customer
+    </p>
+  </section>
+  
+  <!-- Footer with Color Selector -->
+  <footer>
+    <p>&copy; 2025 Funny Stuff. All rights reserved.</p>
+    <div id="colorSelectorContainer">
+      <label for="colorSelector">Choose a main color:</label>
+      <select id="colorSelector">
+        <option value="pink">Pink</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="yellow">Yellow</option>
+        <option value="red">Red</option>
+        <option value="orange">Orange</option>
+        <option value="purple">Purple</option>
+      </select>
+    </div>
+  </footer>
+  
+  <!-- JavaScript for Custom Effects -->
+  <script>
+    // Custom Cursor Setup
+    const customCursor = document.getElementById('customCursor');
+    document.addEventListener('mousemove', function(e) {
+      customCursor.style.top = e.clientY + 'px';
+      customCursor.style.left = e.clientX + 'px';
+    });
+    
+    // Enlarge the cursor briefly on click
+    document.addEventListener('click', () => {
+      customCursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+      setTimeout(() => {
+        customCursor.style.transform = 'translate(-50%, -50%) scale(1)';
+      }, 150);
+    });
+    
+    // Water Splash Effect on Click
+    document.addEventListener('click', function(e) {
+      createWaterSplash(e.clientX, e.clientY);
+    });
+    
+    function createWaterSplash(x, y) {
+      const splash = document.createElement('div');
+      splash.classList.add('water-splash');
+      splash.style.width = '20px';
+      splash.style.height = '20px';
+      splash.style.left = (x - 10) + 'px';
+      splash.style.top = (y - 10) + 'px';
+      document.body.appendChild(splash);
+      // Remove the splash element after the animation completes
+      setTimeout(() => {
+        splash.remove();
+      }, 600);
+    }
+    
+    // "Try Now" button confetti effect
+    document.querySelector('.btn').addEventListener('click', function () {
+      createConfetti();
+    });
+    
+    function createConfetti() {
+      const confettiCount = 30;
+      for (let i = 0; i < confettiCount; i++) {
+        let confetti = document.createElement('div');
+        confetti.style.position = 'fixed';
+        confetti.style.width = '10px';
+        confetti.style.height = '10px';
+        confetti.style.backgroundColor = getRandomColor();
+        confetti.style.top = Math.random() * window.innerHeight + 'px';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.opacity = 0;
+        confetti.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+        document.body.appendChild(confetti);
+        
+        // Trigger the animation
+        setTimeout(() => {
+          confetti.style.opacity = 1;
+          confetti.style.transform = 'translateY(100px)';
+        }, 10);
+        
+        // Remove the confetti after the animation completes
+        setTimeout(() => {
+          confetti.remove();
+        }, 1500);
+      }
+    }
+    
+    function getRandomColor() {
+      const colors = ['var(--main-color)', '#81d4fa', '#c5e1a5', '#ffab91', '#ce93d8'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    // Color Selector Setup
+    const colorSelector = document.getElementById('colorSelector');
+    colorSelector.addEventListener('change', (event) => {
+      const selectedColor = event.target.value;
+      document.documentElement.style.setProperty('--main-color', selectedColor);
+    });
+  </script>
+</body>
+</html>
