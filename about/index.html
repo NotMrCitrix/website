@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MrCitrix Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Source Code Pro', monospace;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .pfp {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            max-width: 600px;
+            margin: 10px auto;
+        }
+
+        /* Cursor styling */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-radius: 50%;
+            position: absolute;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: cursor-blink 1.5s infinite;
+        }
+
+        @keyframes cursor-blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            51%, 100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Particle effect */
+        .particle {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-animation 1s ease-out forwards;
+        }
+
+        @keyframes particle-animation {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-50px) scale(0);
+            }
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="pfp.png" alt="Profile Picture" class="pfp">
+        <h1>Hi, I'm MrCitrix</h1>
+        <p>I'm a web and Python developer, currently getting better at React and backend development with Flask. This is currently my only hobby.</p>
+    </div>
+    <div class="footer">&copy; this is here because it can</div>
+
+    <!-- Animated cursor -->
+    <div class="custom-cursor" id="customCursor"></div>
+
+    <script>
+        const cursor = document.getElementById('customCursor');
+        const particles = [];
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.top = `${e.clientY}px`;
+            cursor.style.left = `${e.clientX}px`;
+
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.width = `${Math.random() * 6 + 4}px`;
+            particle.style.height = particle.style.width;
+            particle.style.top = `${e.clientY}px`;
+            particle.style.left = `${e.clientX}px`;
+
+            document.body.appendChild(particle);
+            particles.push(particle);
+
+            setTimeout(() => {
+                particle.remove();
+                particles.splice(particles.indexOf(particle), 1);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
