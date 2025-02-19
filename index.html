@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>MrCitrix Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -18,6 +18,7 @@
             justify-content: center;
             height: 100vh;
             overflow: hidden;
+            cursor: none; /* Hide the default cursor */
         }
 
         .container {
@@ -25,7 +26,6 @@
             padding: 20px;
             border: 4px solid white;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .pfp {
@@ -35,7 +35,6 @@
             border: 4px solid white;
             margin-bottom: 20px;
             object-fit: cover;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         h1 {
@@ -84,7 +83,7 @@
             color: #fff;
         }
 
-        /* Cursor styling */
+        /* Custom cursor */
         .custom-cursor {
             width: 20px;
             height: 20px;
@@ -93,16 +92,7 @@
             position: absolute;
             pointer-events: none;
             transform: translate(-50%, -50%);
-            animation: cursor-blink 1.5s infinite;
-        }
-
-        @keyframes cursor-blink {
-            0%, 50% {
-                opacity: 1;
-            }
-            51%, 100% {
-                opacity: 0.5;
-            }
+            transition: transform 0.1s ease-out;
         }
 
         /* Particle effect */
@@ -122,10 +112,32 @@
             }
             to {
                 opacity: 0;
-                transform: translateY(-50px) scale(0);
+                transform: translateY(-10px) scale(0);
             }
         }
 
+        /* Click effect */
+        .click-effect {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: click-animation 0.4s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes click-animation {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -136,31 +148,39 @@
     </div>
     <div class="footer">
         <div class="links">
-            <a href="https://mrcitrix.xyz/banana" class="link">Straight Banana</a>
-            <a href="https://mrcitrix.xyz/spouse" class="link">Spouse Stealer</a>
-            <a href="https://mrcitrix.xyz/funnystuff" class="link">Funny Stuff</a>
+            <a href="https://mrcitrix.xyz/banana" class="link">Banana</a>
+            <a href="https://mrcitrix.xyz/spouse" class="link">Spouse</a>
+            <a href="https://mrcitrix.xyz/" class="link">Funny Stuff</a>
         </div>
         <div>&copy; this is here because it can</div>
     </div>
 
-    <!-- Animated cursor -->
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop>
+        <source src="song.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Custom Cursor -->
     <div class="custom-cursor" id="customCursor"></div>
 
     <script>
         const cursor = document.getElementById('customCursor');
         const particles = [];
+        const audio = document.getElementById("backgroundMusic");
 
         document.addEventListener('mousemove', (e) => {
             cursor.style.top = `${e.clientY}px`;
             cursor.style.left = `${e.clientX}px`;
 
+            // Particle effect
             const particle = document.createElement('div');
             particle.classList.add('particle');
             particle.style.width = `${Math.random() * 6 + 4}px`;
             particle.style.height = particle.style.width;
             particle.style.top = `${e.clientY}px`;
             particle.style.left = `${e.clientX}px`;
-
+            
             document.body.appendChild(particle);
             particles.push(particle);
 
@@ -168,6 +188,34 @@
                 particle.remove();
                 particles.splice(particles.indexOf(particle), 1);
             }, 1000);
+        });
+
+        // Click effect
+        document.addEventListener('click', (e) => {
+            const clickEffect = document.createElement('div');
+            clickEffect.classList.add('click-effect');
+            clickEffect.style.top = `${e.clientY - 20}px`; 
+            clickEffect.style.left = `${e.clientX - 20}px`; 
+
+            document.body.appendChild(clickEffect);
+
+            setTimeout(() => {
+                clickEffect.remove();
+            }, 400);
+        });
+
+        // Play audio when user interacts with the page
+        document.addEventListener("click", () => {
+            if (audio.paused) {
+                audio.play().catch(error => console.error("Audio playback error:", error));
+            }
+        });
+
+        // Resume playback if it gets paused due to browser restrictions
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible" && audio.paused) {
+                audio.play();
+            }
         });
     </script>
 </body>
