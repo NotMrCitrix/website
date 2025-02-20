@@ -6,7 +6,6 @@
   <title>Dark Mode Scroll Animation Example</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Global Dark Mode Styling with a subtle gradient */
     body {
       margin: 0;
       padding: 0;
@@ -15,7 +14,6 @@
       color: #fff;
       scroll-behavior: smooth;
     }
-    /* Each section occupies the full viewport height */
     .section {
       height: 100vh;
       display: flex;
@@ -29,7 +27,6 @@
       margin-bottom: 20px;
       font-size: 2.5em;
     }
-    /* Button Styling with hover effects */
     button {
       padding: 15px 30px;
       font-size: 1.1em;
@@ -45,7 +42,6 @@
       background-color: #1565c0;
       transform: translateY(-2px);
     }
-    /* Container for YouTube Videos */
     .video-container {
       display: flex;
       flex-wrap: wrap;
@@ -55,7 +51,7 @@
     }
     .video-container iframe {
       width: 300px;
-      height: 169px; /* 16:9 aspect ratio */
+      height: 169px; 
       border: none;
       border-radius: 5px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -89,7 +85,7 @@
   </section>
 
   <script>
-    // Smoothly scroll to the next section when the button is clicked.
+    console.log("Hey johnny this took way to long, i know you wont see this but your browser will");
     document.getElementById('button1').addEventListener('click', () => {
       document.getElementById('section2').scrollIntoView({ behavior: 'smooth' });
     });
@@ -97,7 +93,7 @@
     document.getElementById('button2').addEventListener('click', () => {
       document.getElementById('section3').scrollIntoView({ behavior: 'smooth' });
     });
-    console.log("Hey johnny this took way to long, i know you wont see this but your browser will");
   </script>
 </body>
 </html>
+// honestly was pretty easy to make
