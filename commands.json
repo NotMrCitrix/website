@@ -1,22 +1,48 @@
-{
-   "date": {
+"hello": {
+    "description": "",
+    "text": "Hi :D"
+  },
+  "date": {
     "description": "Display current date and time",
-    "execute": "const now = new Date(); return `Current date and time: ${now.toLocaleString()}`"
+    "type": "date"
   },
   "whoami": {
     "description": "Display current user information",
-    "execute": "return 'Current user: guest\\nPermission level: user'"
+    "text": "Current user: guest\nPermission level: user"
   },
   "echo": {
     "description": "Echo the provided text",
-    "execute": "if (!args || args.length === 0) return 'Echo what?'; return args.join(' ')"
+    "type": "echo"
+  },
+  "motd": {
+    "description": "Display message of the day",
+    "text": "Message of the day: Quit whilst your ahead"
   },
   "ver": {
     "description": "Display citrOS version information",
-    "execute": "return 'citrOS v1.2.0\\nBuild date: March 8, 2025'"
+    "text": "citrOS v1.3.0\nBuild date: March 8, 2025"
   },
   "credits": {
     "description": "Display credits",
-    "execute": "return 'citrOS developed by MrCitrix'"
+    "text": "citrOS developed by MrCitrix"
+  },
+  "about": {
+    "description": "Display information about citrOS",
+    "text": "citrOS - A fake web terminal that I think looks cool\nVersion 1.0.0\nDeveloped with ♥"
+  },
+  "ls": {
+    "description": "List available directories",
+    "text": "Documents/\nPictures/\nMusic/\nDownloads/\nDesktop/"
+  },
+  "cat": {
+    "description": "Display contents of a file",
+    "text": "This is a simulated cat command. In a real terminal, it would show file contents."
+  },
+  "help-custom": {
+    "description": "Get information about customizing citrOS",
+    "text": "To customize citrOS:\n1. Edit commands.json for text commands\n2. Edit webcommands.json for web links\n3. Reload using the 'reload' command"
+  },
+  "clear": {
+    "description": "Clear the terminal screen"
   }
 }
