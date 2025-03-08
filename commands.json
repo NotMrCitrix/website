@@ -1,49 +1,71 @@
 {
   "hello": {
-    "description": "",
-    "text": "Hi :D"
+    "description": "Say hello",
+    "action": "text",
+    "output": "Hi :D"
   },
   "date": {
     "description": "Display current date and time",
-    "type": "date"
+    "action": "date"
   },
   "whoami": {
     "description": "Display current user information",
-    "text": "Current user: guest\nPermission level: user"
+    "action": "text",
+    "output": "Current user: guest\nPermission level: user"
   },
   "echo": {
     "description": "Echo the provided text",
-    "type": "echo"
+    "action": "echo"
   },
   "motd": {
     "description": "Display message of the day",
-    "text": "Message of the day: Quit whilst your ahead"
+    "action": "text",
+    "output": "Message of the day: Quit whilst your ahead"
   },
   "ver": {
     "description": "Display citrOS version information",
-    "text": "citrOS v1.3.0\nBuild date: March 8, 2025"
+    "action": "text",
+    "output": "citrOS v1.3.0\nBuild date: March 8, 2025"
   },
   "credits": {
     "description": "Display credits",
-    "text": "citrOS developed by MrCitrix"
+    "action": "text",
+    "output": "citrOS developed by MrCitrix"
   },
   "about": {
     "description": "Display information about citrOS",
-    "text": "citrOS - A fake web terminal that I think looks cool\nVersion 1.0.0\nDeveloped with ♥"
+    "action": "text",
+    "output": "citrOS - A fake web terminal that I think looks cool\nVersion 1.0.0\nDeveloped with ♥"
   },
   "ls": {
     "description": "List available directories",
-    "text": "Documents/\nPictures/\nMusic/\nDownloads/\nDesktop/"
+    "action": "text",
+    "output": "Documents/\nPictures/\nMusic/\nDownloads/\nDesktop/"
   },
   "cat": {
     "description": "Display contents of a file",
-    "text": "This is a simulated cat command. In a real terminal, it would show file contents."
+    "action": "text",
+    "output": "This is a simulated cat command. In a real terminal, it would show file contents."
   },
   "help-custom": {
     "description": "Get information about customizing citrOS",
-    "text": "To customize citrOS:\n1. Edit commands.json for text commands\n2. Edit webcommands.json for web links\n3. Reload using the 'reload' command"
+    "action": "text",
+    "output": "To customize citrOS:\n1. Edit commands.json for text commands\n2. Edit webcommands.json for web links\n3. Reload using the 'reload' command"
   },
   "clear": {
-    "description": "Clear the terminal screen"
+    "description": "Clear the terminal screen",
+    "action": "clear"
+  },
+  "help": {
+    "description": "Display available commands",
+    "action": "help"
+  },
+  "reload": {
+    "description": "Reload command configurations",
+    "action": "reload"
+  },
+  "start": {
+    "description": "Launch applications",
+    "action": "start"
   }
 }
