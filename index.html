@@ -91,139 +91,9 @@
         const terminal = document.getElementById('terminal');
         const commandInput = document.getElementById('command-input');
         
-        // Default commands
-        let textCommands = {};
+        // Command storage
+        let commands = {};
         let webCommands = {};
-        
-        // Initialize with default values (will be overridden by JSON if available)
-        textCommands = {
-            "hello": {
-                "description": "Display a friendly greeting",
-                "text": "Hello there! Welcome to citrOS terminal."
-            },
-            "date": {
-                "description": "Display current date and time",
-                "action": function(args) {
-                    const now = new Date();
-                    return `Current date and time: ${now.toLocaleString()}`;
-                }
-            },
-            "whoami": {
-                "description": "Display current user information",
-                "text": "Current user: guest\nPermission level: user"
-            },
-            "echo": {
-                "description": "Echo the provided text",
-                "action": function(args) {
-                    if (!args || args.length === 0) return 'Echo what?';
-                    return args.join(' ');
-                }
-            },
-            "motd": {
-                "description": "Display message of the day",
-                "text": "Message of the day: Be kind to yourself and others!"
-            },
-            "ver": {
-                "description": "Display citrOS version information",
-                "text": "citrOS v1.0.0\nBuild date: March 8, 2025"
-            },
-            "credits": {
-                "description": "Display credits",
-                "text": "citrOS developed by MrCitrix\nSpecial thanks to the web development community!"
-            }
-        };
-        
-        webCommands = {
-            "about.html": {
-                "description": "Open the about page",
-                "url": "https://mrcitrix.xyz/about"
-            },
-            "home": {
-                "description": "Open the homepage",
-                "url": "https://mrcitrix.xyz"
-            },
-            "contact": {
-                "description": "Open the contact form",
-                "url": "https://mrcitrix.xyz/contact"
-            },
-            "projects": {
-                "description": "View projects portfolio",
-                "url": "https://mrcitrix.xyz/projects"
-            },
-            "blog": {
-                "description": "Read the latest blog posts",
-                "url": "https://mrcitrix.xyz/blog"
-            },
-            "github": {
-                "description": "Visit GitHub profile",
-                "url": "https://github.com/mrcitrix"
-            }
-        };
-        
-        // Core commands that will always be available
-        const coreCommands = {
-            'help': {
-                description: 'Display all commands',
-                execute: function(args) {
-                    let output = 'Available commands:\n\n';
-                    
-                    // Display all core and text commands
-                    const allCommands = {...coreCommands};
-                    
-                    for (const cmd in allCommands) {
-                        output += `  <span class="help-command">${cmd}</span> - <span class="help-desc">${allCommands[cmd].description}</span>\n`;
-                    }
-                    
-                    for (const cmd in textCommands) {
-                        output += `  <span class="help-command">${cmd}</span> - <span class="help-desc">${textCommands[cmd].description}</span>\n`;
-                    }
-                    
-                    // Display start subcommands
-                    output += '\nStart subcommands:\n\n';
-                    for (const cmd in webCommands) {
-                        output += `  <span class="help-command">start ${cmd}</span> - <span class="help-desc">${webCommands[cmd].description}</span>\n`;
-                    }
-                    
-                    return output;
-                }
-            },
-            'clear': {
-                description: 'Clear the terminal screen',
-                execute: function(args) {
-                    terminal.innerHTML = '';
-                    return '';
-                }
-            },
-            'about': {
-                description: 'Display information about citrOS',
-                execute: function(args) {
-                    return 'citrOS - A fake web terminal that I think looks cool\nVersion 1.0.0\nDeveloped with ♥';
-                }
-            },
-            'start': {
-                description: 'Launch applications',
-                execute: function(args) {
-                    if (!args || args.length === 0) {
-                        return '<span class="error-text">Error: Please specify what to start. Try "start about.html"</span>';
-                    }
-                    
-                    const target = args[0];
-                    if (webCommands[target]) {
-                        window.open(webCommands[target].url, '_blank');
-                        return `Launching ${target}...`;
-                    } else {
-                        return `<span class="error-text">Error: Unknown target "${target}"</span>`;
-                    }
-                }
-            },
-            'reload': {
-                description: 'Reload command configurations',
-                execute: function(args) {
-                    loadCommandsFromJSON();
-                    return 'Command configurations reloaded.';
-                }
-            }
-        };
         
         // Load commands from JSON files
         async function loadCommandsFromJSON() {
@@ -231,24 +101,22 @@
                 // Load text commands
                 const cmdResponse = await fetch('commands.json');
                 if (cmdResponse.ok) {
-                    const loadedCommands = await cmdResponse.json();
-                    textCommands = {...textCommands, ...loadedCommands};
+                    commands = await cmdResponse.json();
                     addOutputLine('Text commands loaded successfully.', 'system-text');
                 } else {
-                    addOutputLine('Failed to load commands.json - using defaults', 'system-text');
+                    addOutputLine('Failed to load commands.json', 'error-text');
                 }
                 
                 // Load web commands for start
                 const webCmdResponse = await fetch('webcommands.json');
                 if (webCmdResponse.ok) {
-                    const loadedWebCommands = await webCmdResponse.json();
-                    webCommands = {...webCommands, ...loadedWebCommands};
+                    webCommands = await webCmdResponse.json();
                     addOutputLine('Web commands loaded successfully.', 'system-text');
                 } else {
-                    addOutputLine('Failed to load webcommands.json - using defaults', 'system-text');
+                    addOutputLine('Failed to load webcommands.json', 'error-text');
                 }
             } catch (error) {
-                addOutputLine(`Note: ${error.message} - using default commands`, 'system-text');
+                addOutputLine(`Error loading commands: ${error.message}`, 'error-text');
             }
         }
         
@@ -279,18 +147,66 @@
             
             let result;
             
-            // Check core commands first
-            if (coreCommands[cmd]) {
-                result = coreCommands[cmd].execute(args);
-            } 
-            // Then check text commands
-            else if (textCommands[cmd]) {
-                if (textCommands[cmd].action) {
-                    result = textCommands[cmd].action(args);
-                } else if (textCommands[cmd].text) {
-                    result = textCommands[cmd].text;
+            // Special core commands that aren't in JSON
+            if (cmd === 'start') {
+                if (!args || args.length === 0) {
+                    result = '<span class="error-text">Error: Please specify what to start. Try "start about.html"</span>';
                 } else {
-                    result = `Command ${cmd} is defined but has no action or text.`;
+                    const target = args[0];
+                    if (webCommands[target]) {
+                        window.open(webCommands[target].url, '_blank');
+                        result = `Launching ${target}...`;
+                    } else {
+                        result = `<span class="error-text">Error: Unknown target "${target}"</span>`;
+                    }
+                }
+            } else if (cmd === 'reload') {
+                loadCommandsFromJSON();
+                result = 'Command configurations reloaded.';
+            } else if (cmd === 'help') {
+                let output = 'Available commands:\n\n';
+                
+                // List all available commands from the JSON
+                for (const cmd in commands) {
+                    output += `  <span class="help-command">${cmd}</span> - <span class="help-desc">${commands[cmd].description}</span>\n`;
+                }
+                
+                // Add the built-in start and reload commands
+                output += `  <span class="help-command">start</span> - <span class="help-desc">Launch applications</span>\n`;
+                output += `  <span class="help-command">reload</span> - <span class="help-desc">Reload command configurations</span>\n`;
+                
+                // Display start subcommands
+                output += '\nStart subcommands:\n\n';
+                for (const cmd in webCommands) {
+                    output += `  <span class="help-command">start ${cmd}</span> - <span class="help-desc">${webCommands[cmd].description}</span>\n`;
+                }
+                
+                result = output;
+            } else if (cmd === 'clear') {
+                terminal.innerHTML = '';
+                result = '';
+            }
+            // Check for commands defined in the JSON
+            else if (commands[cmd]) {
+                const command = commands[cmd];
+                
+                // Check command type and handle accordingly
+                if (command.text) {
+                    // Simple text output
+                    result = command.text;
+                } else if (command.type && command.type === 'date') {
+                    // Date command
+                    const now = new Date();
+                    result = `Current date and time: ${now.toLocaleString()}`;
+                } else if (command.type && command.type === 'echo') {
+                    // Echo command
+                    if (!args || args.length === 0) {
+                        result = 'Echo what?';
+                    } else {
+                        result = args.join(' ');
+                    }
+                } else {
+                    result = `Command ${cmd} is defined but has no valid action.`;
                 }
             } else {
                 result = `<span class="error-text">Command not found: ${cmd}</span>`;
