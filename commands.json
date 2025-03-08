@@ -1,0 +1,22 @@
+{
+   "date": {
+    "description": "Display current date and time",
+    "execute": "const now = new Date(); return `Current date and time: ${now.toLocaleString()}`"
+  },
+  "whoami": {
+    "description": "Display current user information",
+    "execute": "return 'Current user: guest\\nPermission level: user'"
+  },
+  "echo": {
+    "description": "Echo the provided text",
+    "execute": "if (!args || args.length === 0) return 'Echo what?'; return args.join(' ')"
+  },
+  "ver": {
+    "description": "Display citrOS version information",
+    "execute": "return 'citrOS v1.2.0\\nBuild date: March 8, 2025'"
+  },
+  "credits": {
+    "description": "Display credits",
+    "execute": "return 'citrOS developed by MrCitrix'"
+  }
+}
