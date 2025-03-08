@@ -129,73 +129,6 @@
             terminal.scrollTop = terminal.scrollHeight;
         }
         
-        // Execute command based on action type
-        function executeCommand(cmd, args) {
-            // Check if command exists
-            if (!commands[cmd]) {
-                return `<span class="error-text">Command not found: ${cmd}</span>`;
-            }
-            
-            const command = commands[cmd];
-            const action = command.action;
-            
-            // Execute action based on type
-            switch (action) {
-                case 'text':
-                    return command.output;
-                
-                case 'date':
-                    const now = new Date();
-                    return `Current date and time: ${now.toLocaleString()}`;
-                
-                case 'echo':
-                    if (!args || args.length === 0) {
-                        return 'Echo what?';
-                    }
-                    return args.join(' ');
-                
-                case 'clear':
-                    terminal.innerHTML = '';
-                    return '';
-                
-                case 'help':
-                    let output = 'Available commands:\n\n';
-                    
-                    // List all available commands from the JSON
-                    for (const cmdName in commands) {
-                        output += `  <span class="help-command">${cmdName}</span> - <span class="help-desc">${commands[cmdName].description}</span>\n`;
-                    }
-                    
-                    // Display start subcommands
-                    output += '\nStart subcommands:\n\n';
-                    for (const webCmd in webCommands) {
-                        output += `  <span class="help-command">start ${webCmd}</span> - <span class="help-desc">${webCommands[webCmd].description}</span>\n`;
-                    }
-                    
-                    return output;
-                
-                case 'reload':
-                    loadCommandsFromJSON();
-                    return 'Command configurations reloaded.';
-                
-                case 'start':
-                    if (!args || args.length === 0) {
-                        return '<span class="error-text">Error: Please specify what to start. Try "start about.html"</span>';
-                    }
-                    
-                    const target = args[0];
-                    if (webCommands[target]) {
-                        window.open(webCommands[target].url, '_blank');
-                        return `Launching ${target}...`;
-                    } else {
-                        return `<span class="error-text">Error: Unknown target "${target}"</span>`;
-                    }
-                
-                default:
-                    return `<span class="error-text">Error: Invalid action type for command "${cmd}"</span>`;
-            }
-        }
-        
         // Process command input
         function processCommand() {
             const commandLine = commandInput.value.trim();
@@ -212,8 +145,75 @@
             const cmd = cmdParts[0].toLowerCase();
             const args = cmdParts.slice(1);
             
-            // Execute the command and get result
-            const result = executeCommand(cmd, args);
+            let result;
+            
+            // Core commands handling (these always work regardless of JSON)
+            if (cmd === 'help') {
+                let output = 'Available commands:\n\n';
+                
+                // List all available commands from the JSON
+                for (const cmdName in commands) {
+                    output += `  <span class="help-command">${cmdName}</span> - <span class="help-desc">${commands[cmdName].description}</span>\n`;
+                }
+                
+                // Add the built-in start command
+                if (!commands.start) {
+                    output += `  <span class="help-command">start</span> - <span class="help-desc">Launch applications</span>\n`;
+                }
+                
+                // Add the built-in reload command
+                if (!commands.reload) {
+                    output += `  <span class="help-command">reload</span> - <span class="help-desc">Reload command configurations</span>\n`;
+                }
+                
+                // Display start subcommands
+                output += '\nStart subcommands:\n\n';
+                for (const cmd in webCommands) {
+                    output += `  <span class="help-command">start ${cmd}</span> - <span class="help-desc">${webCommands[cmd].description}</span>\n`;
+                }
+                
+                result = output;
+            } else if (cmd === 'clear') {
+                terminal.innerHTML = '';
+                result = '';
+            } else if (cmd === 'reload') {
+                loadCommandsFromJSON();
+                result = 'Command configurations reloaded.';
+            } else if (cmd === 'start') {
+                if (!args || args.length === 0) {
+                    result = '<span class="error-text">Error: Please specify what to start. Try "start about.html"</span>';
+                } else {
+                    const target = args[0];
+                    if (webCommands[target]) {
+                        window.open(webCommands[target].url, '_blank');
+                        result = `Launching ${target}...`;
+                    } else {
+                        result = `<span class="error-text">Error: Unknown target "${target}"</span>`;
+                    }
+                }
+            } 
+            // Normal JSON-defined commands
+            else if (commands[cmd]) {
+                const command = commands[cmd];
+                
+                // Process based on action or type
+                if (command.action === 'text' || command.text) {
+                    result = command.output || command.text;
+                } else if (command.action === 'date' || (command.type && command.type === 'date')) {
+                    const now = new Date();
+                    result = `Current date and time: ${now.toLocaleString()}`;
+                } else if (command.action === 'echo' || (command.type && command.type === 'echo')) {
+                    if (!args || args.length === 0) {
+                        result = 'Echo what?';
+                    } else {
+                        result = args.join(' ');
+                    }
+                } else {
+                    result = `Command ${cmd} is defined but has no valid action.`;
+                }
+            } else {
+                result = `<span class="error-text">Command not found: ${cmd}</span>`;
+            }
             
             // Display the result
             if (result) {
