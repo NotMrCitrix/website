@@ -3,219 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MrCitrix Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <title>citrOS Terminal</title>
     <style>
         body {
+            background-color: #1e1e1e;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
             margin: 0;
             padding: 0;
-            font-family: 'Source Code Pro', monospace;
-            background-color: #121212;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             height: 100vh;
-            overflow: hidden;
-            cursor: none; /* Hide the default cursor */
-        }
-
-        .container {
-            text-align: center;
-            padding: 20px;
-            border: 4px solid white;
-            border-radius: 15px;
-        }
-
-        .pfp {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid white;
-            margin-bottom: 20px;
-            object-fit: cover;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin: 0;
-        }
-
-        p {
-            font-size: 1.2rem;
-            margin-top: 10px;
-            max-width: 600px;
-            margin: 10px auto;
-        }
-
-        .footer {
-            position: absolute;
-            bottom: 20px;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 10px;
         }
-
-        .links {
+        
+        #terminal {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        #input-line {
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
+            padding: 10px 20px;
+            background-color: #252525;
         }
-
-        .link {
-            color: #bbb;
-            text-decoration: none;
-            font-size: 1rem;
-            padding: 8px 16px;
-            transition: 0.3s ease-in-out;
-            border: 1px solid white;
-            border-radius: 5px;
-            margin: 5px;
+        
+        #prompt {
+            color: #ffcc00;
+            margin-right: 10px;
         }
-
-        .link:hover {
-            background-color: #555;
-            color: #fff;
+        
+        #command-input {
+            flex: 1;
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
         }
-
-        /* Custom cursor */
-        .custom-cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid white;
-            border-radius: 50%;
-            position: absolute;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            transition: transform 0.1s ease-out;
+        
+        .output-line {
+            margin-bottom: 10px;
+            line-height: 1.5;
         }
-
-        /* Particle effect */
-        .particle {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particle-animation 1s ease-out forwards;
-            opacity: 0;
+        
+        .prompt-text {
+            color: #ffcc00;
         }
-
-        @keyframes particle-animation {
-            from {
-                opacity: 1;
-                transform: scale(1);
-            }
-            to {
-                opacity: 0;
-                transform: translateY(-10px) scale(0);
-            }
+        
+        .command-text {
+            color: #ffffff;
         }
-
-        /* Click effect */
-        .click-effect {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            border: 2px solid white;
-            border-radius: 50%;
-            opacity: 0.8;
-            animation: click-animation 0.4s ease-out forwards;
-            pointer-events: none;
+        
+        .system-text {
+            color: #00aaff;
         }
-
-        @keyframes click-animation {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(2);
-                opacity: 0;
-            }
+        
+        .error-text {
+            color: #ff3333;
+        }
+        
+        .help-command {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        
+        .help-desc {
+            color: #cccccc;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="pfp.png" alt="Profile Picture" class="pfp">
-        <h1>Hi, I'm MrCitrix</h1>
-        <p>I'm a web and Python developer, currently getting better at React and backend development with Flask. This is currently my only hobby.</p>
-    </div>
-    <div class="footer">
-        <div class="links">
-            <a href="https://mrcitrix.xyz/banana" class="link">Banana</a>
-            <a href="https://mrcitrix.xyz/spouse" class="link">Spouse</a>
-            <a href="https://mrcitrix.xyz/" class="link">Funny Stuff</a>
+    <div id="terminal">
+        <div class="output-line system-text">
+            Welcome to citrOS v1.0.0
+            Type 'help' to see available commands.
         </div>
-        <div>&copy; this is here because it can</div>
     </div>
-
-    <!-- Background Music -->
-    <audio id="backgroundMusic" loop>
-        <source src="song.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
-
-    <!-- Custom Cursor -->
-    <div class="custom-cursor" id="customCursor"></div>
+    <div id="input-line">
+        <div id="prompt">citros~$</div>
+        <input type="text" id="command-input" autofocus>
+    </div>
 
     <script>
-        const cursor = document.getElementById('customCursor');
-        const particles = [];
-        const audio = document.getElementById("backgroundMusic");
-
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.top = `${e.clientY}px`;
-            cursor.style.left = `${e.clientX}px`;
-
-            // Particle effect
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            particle.style.width = `${Math.random() * 6 + 4}px`;
-            particle.style.height = particle.style.width;
-            particle.style.top = `${e.clientY}px`;
-            particle.style.left = `${e.clientX}px`;
+        const terminal = document.getElementById('terminal');
+        const commandInput = document.getElementById('command-input');
+        
+        // Command storage
+        let commands = {};
+        let webCommands = {};
+        
+        // Core commands that will always be available
+        const coreCommands = {
+            'help': {
+                description: 'Display all commands',
+                execute: function() {
+                    let output = 'Available commands:\n\n';
+                    
+                    // Display all commands
+                    const allCommands = {...commands, ...coreCommands};
+                    
+                    for (const cmd in allCommands) {
+                        output += `  <span class="help-command">${cmd}</span> - <span class="help-desc">${allCommands[cmd].description}</span>\n`;
+                    }
+                    
+                    // Display start subcommands
+                    output += '\nStart subcommands:\n\n';
+                    for (const cmd in webCommands) {
+                        output += `  <span class="help-command">start ${cmd}</span> - <span class="help-desc">${webCommands[cmd].description}</span>\n`;
+                    }
+                    
+                    return output;
+                }
+            },
+            'clear': {
+                description: 'Clear the terminal screen',
+                execute: function() {
+                    terminal.innerHTML = '';
+                    return '';
+                }
+            },
+            'about': {
+                description: 'Display information about citrOS',
+                execute: function() {
+                    return 'citrOS - A fake web terminal that I think looks cool\nVersion 1.0.0\nDeveloped with ♥';
+                }
+            },
+            'start': {
+                description: 'Launch applications',
+                execute: function(args) {
+                    if (!args || args.length === 0) {
+                        return '<span class="error-text">Error: Please specify what to start. Try "start about.html"</span>';
+                    }
+                    
+                    const target = args[0];
+                    if (webCommands[target]) {
+                        window.open(webCommands[target].url, '_blank');
+                        return `Launching ${target}...`;
+                    } else {
+                        return `<span class="error-text">Error: Unknown target "${target}"</span>`;
+                    }
+                }
+            },
+            'reload': {
+                description: 'Reload command configurations',
+                execute: function() {
+                    loadCommandsFromJSON();
+                    return 'Command configurations reloaded.';
+                }
+            }
+        };
+        
+        // Load commands from JSON files
+        async function loadCommandsFromJSON() {
+            try {
+                // Load normal commands
+                const cmdResponse = await fetch('commands.json');
+                if (cmdResponse.ok) {
+                    commands = await cmdResponse.json();
+                    addOutputLine('Normal commands loaded successfully.', 'system-text');
+                } else {
+                    addOutputLine('Failed to load commands.json', 'error-text');
+                }
+                
+                // Load web commands for start
+                const webCmdResponse = await fetch('webcommands.json');
+                if (webCmdResponse.ok) {
+                    webCommands = await webCmdResponse.json();
+                    addOutputLine('Web commands loaded successfully.', 'system-text');
+                } else {
+                    addOutputLine('Failed to load webcommands.json', 'error-text');
+                }
+            } catch (error) {
+                addOutputLine(`Error loading commands: ${error.message}`, 'error-text');
+            }
+        }
+        
+        // Add output line helper
+        function addOutputLine(text, className = '') {
+            const outputLine = document.createElement('div');
+            outputLine.className = `output-line ${className}`;
+            outputLine.innerHTML = text;
+            terminal.appendChild(outputLine);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        // Process command input
+        function processCommand() {
+            const commandLine = commandInput.value.trim();
+            if (commandLine === '') return;
             
-            document.body.appendChild(particle);
-            particles.push(particle);
-
-            setTimeout(() => {
-                particle.remove();
-                particles.splice(particles.indexOf(particle), 1);
-            }, 1000);
-        });
-
-        // Click effect
-        document.addEventListener('click', (e) => {
-            const clickEffect = document.createElement('div');
-            clickEffect.classList.add('click-effect');
-            clickEffect.style.top = `${e.clientY - 20}px`; 
-            clickEffect.style.left = `${e.clientX - 20}px`; 
-
-            document.body.appendChild(clickEffect);
-
-            setTimeout(() => {
-                clickEffect.remove();
-            }, 400);
-        });
-
-        // Play audio when user interacts with the page
-        document.addEventListener("click", () => {
-            if (audio.paused) {
-                audio.play().catch(error => console.error("Audio playback error:", error));
+            // Add command to terminal output
+            const commandOutput = document.createElement('div');
+            commandOutput.className = 'output-line';
+            commandOutput.innerHTML = `<span class="prompt-text">citros~$</span> <span class="command-text">${commandLine}</span>`;
+            terminal.appendChild(commandOutput);
+            
+            // Process the command
+            const cmdParts = commandLine.split(' ');
+            const cmd = cmdParts[0].toLowerCase();
+            const args = cmdParts.slice(1);
+            
+            // Execute command if it exists
+            let result;
+            const allCommands = {...commands, ...coreCommands};
+            
+            if (allCommands[cmd]) {
+                result = allCommands[cmd].execute(args);
+            } else {
+                result = `<span class="error-text">Command not found: ${cmd}</span>`;
+            }
+            
+            // Display the result
+            if (result) {
+                const resultOutput = document.createElement('div');
+                resultOutput.className = 'output-line';
+                resultOutput.innerHTML = result;
+                terminal.appendChild(resultOutput);
+            }
+            
+            // Clear input and scroll to bottom
+            commandInput.value = '';
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        // Event listener for Enter key
+        commandInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                processCommand();
             }
         });
-
-        // Resume playback if it gets paused due to browser restrictions
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible" && audio.paused) {
-                audio.play();
-            }
+        
+        // Auto-focus input when clicking anywhere in the terminal
+        document.body.addEventListener('click', function() {
+            commandInput.focus();
+        });
+        
+        // Load commands and initialize terminal
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadCommandsFromJSON();
         });
     </script>
 </body>
