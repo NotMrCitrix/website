@@ -72,7 +72,6 @@
       background: rgba(0, 0, 0, 0.7);
       padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(155, 89, 182, 0.7);
       width: 90%;
       max-width: 800px;
       margin: 50px auto;
@@ -84,7 +83,6 @@
 
     .content-wrapper:hover {
       transform: translateY(-5px);
-      box-shadow: 0 0 30px rgba(155, 89, 182, 0.9);
     }
 
     
@@ -260,7 +258,6 @@
       50% { opacity: 0; }
     }
     
-    /* Cool navigation */
     .nav {
       display: flex;
       justify-content: center;
@@ -282,7 +279,6 @@
       transform: translateY(-3px);
     }
 
-    /* Website link */
     .website-link {
       position: absolute;
       top: 20px;
@@ -302,7 +298,6 @@
       transform: translateY(-3px);
     }
 
-    /* Social media icons */
     .social-icons {
       margin-top: 30px;
       display: flex;
@@ -321,7 +316,6 @@
       color: #8e44ad;
     }
 
-    /* Theme toggle */
     .theme-toggle {
       position: fixed;
       top: 20px;
@@ -341,14 +335,12 @@
       background: rgba(155, 89, 182, 0.5);
     }
 
-    /* Cool mode styles */
     .cool-mode .bg-image {
       filter: hue-rotate(180deg) blur(5px);
     }
 
     .cool-mode .content-wrapper {
       background: rgba(0, 20, 40, 0.7);
-      box-shadow: 0 0 20px rgba(89, 155, 182, 0.7);
     }
 
     .cool-mode h1 {
@@ -394,7 +386,6 @@
       background: rgba(89, 155, 182, 0.5);
     }
 
-    /* Loading animation */
     .loader {
       position: fixed;
       top: 0;
@@ -433,7 +424,6 @@
       100% { transform: rotate(360deg); }
     }
     
-    /* Attribution */
     .attribution {
       text-align: center;
       margin-top: 20px;
@@ -452,7 +442,6 @@
   </style>
 </head>
 <body>
-  <!-- Loading screen -->
   <div class="loader">
     <div class="loader-content">
       <div class="loader-icon"></div>
@@ -460,19 +449,15 @@
     </div>
   </div>
 
-  <!-- Website link at the top -->
   <a href="https://mrcitrix.xyz" class="website-link">mrcitrix.xyz</a>
 
-  <!-- Theme toggle button -->
   <button class="theme-toggle" title="Toggle Cool Mode">
     <i class="fas fa-snowflake"></i>
   </button>
 
-  <!-- Background elements -->
   <div class="bg-image"></div>
   <div class="particles"></div>
 
-  <!-- Your custom content -->
   <div class="content-wrapper">
     <h1>Hi, I'm MrCitrix</h1>
     
@@ -572,7 +557,6 @@
     
     createParticles();
 
-    // Terminal typing effect
     const terminalText = document.getElementById('terminal-text');
     const messages = [
       "Welcome to MrCitrix's terminal...",
