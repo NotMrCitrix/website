@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>citrOS Command Editor</title>
+    <style>
+        :root {
+            --primary: #00e676;
+            --primary-dark: #00c853;
+            --primary-light: #69f0ae;
+            --secondary: #00b0ff;
+            --secondary-dark: #0091ea;
+            --accent: #aa00ff;
+            --background: #121212;
+            --surface: #1e1e1e;
+            --card: #2d2d2d;
+            --text: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border: #3d3d3d;
+            --hover: #3a3a3a;
+            --selected: #383838;
+            --error: #ff5252;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #000;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 230, 118, 0.3);
+        }
+
+        h1, h2 {
+            margin: 0;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            background-color: var(--surface);
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            font-weight: bold;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background-color: var(--hover);
+        }
+
+        .tab.active {
+            background: linear-gradient(to bottom, var(--primary-dark), var(--primary));
+            color: #000;
+            box-shadow: 0 -2px 10px rgba(0, 230, 118, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .command-section {
+            display: flex;
+            margin-bottom: 25px;
+            gap: 25px;
+        }
+
+        .command-list {
+            flex: 1;
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            max-height: 500px;
+            border: 1px solid var(--border);
+        }
+
+        .command-editor {
+            flex: 2;
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+        }
+
+        .command-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+            margin-bottom: 5px;
+        }
+
+        .command-item:hover {
+            background-color: var(--hover);
+            transform: translateX(5px);
+        }
+
+        .command-item.selected {
+            background-color: var(--selected);
+            border-left: 4px solid var(--primary);
+            font-weight: bold;
+        }
+
+        .command-name {
+            flex: 1;
+        }
+
+        .delete-btn {
+            color: var(--error);
+            cursor: pointer;
+            font-size: 18px;
+            margin-left: 10px;
+            transition: all 0.2s ease;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .delete-btn:hover {
+            background-color: rgba(255, 82, 82, 0.2);
+            transform: scale(1.2);
+        }
+
+        h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            color: var(--primary-light);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: var(--surface);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 230, 118, 0.2);
+        }
+
+        textarea {
+            height: 120px;
+            font-family: 'Consolas', monospace;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #000;
+            box-shadow: 0 4px 6px rgba(0, 230, 118, 0.3);
+        }
+
+        .primary-btn:hover {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 230, 118, 0.4);
+        }
+
+        .secondary-btn {
+            background: linear-gradient(135deg, var(--secondary-dark), var(--secondary));
+            color: #000;
+            box-shadow: 0 4px 6px rgba(0, 176, 255, 0.3);
+        }
+
+        .secondary-btn:hover {
+            background: linear-gradient(135deg, var(--secondary), #40c4ff);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 176, 255, 0.4);
+        }
+
+        .add-btn {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .export-section {
+            background-color: var(--card);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+        }
+
+        .export-textarea {
+            height: 150px;
+            margin-bottom: 20px;
+            font-family: 'Consolas', monospace;
+            background-color: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .output-preview {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Consolas', monospace;
+            white-space: pre-wrap;
+            color: var(--text);
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--surface);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-dark);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>citrOS Command Editor</h1>
+            <p>Edit and manage your citrOS commands and web links</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('text-commands')">Text Commands</button>
+            <button class="tab" onclick="switchTab('web-commands')">Web Commands</button>
+        </div>
+
+        <div id="text-commands" class="tab-content active">
+            <div class="command-section">
+                <div class="command-list">
+                    <h3>Commands</h3>
+                    <div id="text-command-list"></div>
+                    <button class="primary-btn add-btn" onclick="addNewCommand('text')">Add New Command</button>
+                </div>
+                <div class="command-editor">
+                    <h3 id="text-editor-title">Edit Command</h3>
+                    <form id="text-command-form">
+                        <div class="form-group">
+                            <label for="text-command-name">Command Name:</label>
+                            <input type="text" id="text-command-name" placeholder="e.g., hello, help, ls">
+                        </div>
+                        <div class="form-group">
+                            <label for="text-command-description">Description:</label>
+                            <input type="text" id="text-command-description" placeholder="Brief description of what the command does">
+                        </div>
+                        <div class="form-group">
+                            <label for="text-command-action">Action Type:</label>
+                            <select id="text-command-action">
+                                <option value="text">text</option>
+                                <option value="clear">clear</option>
+                                <option value="help">help</option>
+                                <option value="date">date</option>
+                                <option value="echo">echo</option>
+                                <option value="reload">reload</option>
+                                <option value="start">start</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="text-output-group">
+                            <label for="text-command-output">Output Text:</label>
+                            <textarea id="text-command-output" placeholder="The text output of this command"></textarea>
+                            <div class="output-preview" id="text-output-preview"></div>
+                        </div>
+                        <div class="button-group">
+                            <button type="button" class="secondary-btn" onclick="resetTextForm()">Clear Form</button>
+                            <button type="button" class="primary-btn" onclick="saveTextCommand()">Save Command</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <h3>Export Text Commands</h3>
+                <textarea class="export-textarea" id="text-commands-export" readonly></textarea>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="copyToClipboard('text-commands-export')">Copy to Clipboard</button>
+                    <button class="primary-btn" onclick="downloadJSON('commands.json', 'text-commands-export')">Download JSON</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="web-commands" class="tab-content">
+            <div class="command-section">
+                <div class="command-list">
+                    <h3>Web Links</h3>
+                    <div id="web-command-list"></div>
+                    <button class="primary-btn add-btn" onclick="addNewCommand('web')">Add New Web Link</button>
+                </div>
+                <div class="command-editor">
+                    <h3 id="web-editor-title">Edit Web Link</h3>
+                    <form id="web-command-form">
+                        <div class="form-group">
+                            <label for="web-command-name">Command Name:</label>
+                            <input type="text" id="web-command-name" placeholder="e.g., banana, about, funnystuff">
+                        </div>
+                        <div class="form-group">
+                            <label for="web-command-description">Description:</label>
+                            <input type="text" id="web-command-description" placeholder="Brief description of the website">
+                        </div>
+                        <div class="form-group">
+                            <label for="web-command-url">URL:</label>
+                            <input type="text" id="web-command-url" placeholder="https://example.com">
+                        </div>
+                        <div class="button-group">
+                            <button type="button" class="secondary-btn" onclick="resetWebForm()">Clear Form</button>
+                            <button type="button" class="primary-btn" onclick="saveWebCommand()">Save Web Link</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="export-section">
+                <h3>Export Web Commands</h3>
+                <textarea class="export-textarea" id="web-commands-export" readonly></textarea>
+                <div class="button-group">
+                    <button class="secondary-btn" onclick="copyToClipboard('web-commands-export')">Copy to Clipboard</button>
+                    <button class="primary-btn" onclick="downloadJSON('webcommands.json', 'web-commands-export')">Download JSON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store commands
+        let textCommands = {};
+        let webCommands = {};
+        let currentTextCommand = '';
+        let currentWebCommand = '';
+
+        // Initialize on page load
+        window.onload = function() {
+            // Load sample data
+            textCommands = {
+                "hello": {
+                    "description": "Say hello",
+                    "action": "text",
+                    "output": "Hi :D "
+                },
+                "date": {
+                    "description": "Display current date and time",
+                    "action": "date"
+                },
+                "whoami": {
+                    "description": "Display current user information",
+                    "action": "text",
+                    "output": "Current user: guest\nPermission level: user"
+                },
+                "echo": {
+                    "description": "Echo the provided text",
+                    "action": "echo"
+                },
+                "motd": {
+                    "description": "Display message of the day",
+                    "action": "text",
+                    "output": "Message of the day: Quit whilst your ahead"
+                },
+                "ver": {
+                    "description": "Display citrOS version information",
+                    "action": "text",
+                    "output": "citrOS v1.3.0\nBuild date: March 8, 2025"
+                },
+                "credits": {
+                    "description": "Display credits",
+                    "action": "text",
+                    "output": "citrOS developed by MrCitrix"
+                },
+                "about": {
+                    "description": "Display information about citrOS",
+                    "action": "text",
+                    "output": "citrOS - A fake web terminal that I think looks cool\nVersion 1.3.0\nDeveloped with ♥"
+                },
+                "ls": {
+                    "description": "List available directories",
+                    "action": "text",
+                    "output": "Documents/\nPictures/\nMusic/\nDownloads/\nDesktop/"
+                },
+                "cat": {
+                    "description": "Display contents of a file",
+                    "action": "text",
+                    "output": "I dont know how to properly implement this command but I like the name."
+                },
+                "help-custom": {
+                    "description": "Get information about customizing citrOS",
+                    "action": "text",
+                    "output": "To customize citrOS:\n1. Edit commands.json for text commands\n2. Edit webcommands.json for web links\n3. Reload using the 'reload' command"
+                },
+                "clear": {
+                    "description": "Clear the terminal screen",
+                    "action": "clear"
+                },
+                "help": {
+                    "description": "Display available commands",
+                    "action": "help"
+                },
+                "reload": {
+                    "description": "Reload command configurations",
+                    "action": "reload"
+                },
+                "babu": {
+                    "description": "creature",
+                    "action": "text",
+                    "output": "I dont like them, they scare me, I want their wife "
+                },
+                "start": {
+                    "description": "Launch applications",
+                    "action": "start"
+                }
+            };
+
+            webCommands = {
+                "banana": {
+                    "description": "Opens fake banana site",
+                    "url": "https://mrcitrix.xyz/banana"
+                },
+                "about": {
+                    "description": "View projects portfolio",
+                    "url": "https://mrcitrix.xyz/about"
+                },
+                "funnystuff": {
+                    "description": "Fake drink website",
+                    "url": "https://mrcitrix.xyz/funnystuff"
+                },
+                "wishlist": {
+                    "description": "My wishlist",
+                    "url": "https://mrcitrix.xyz/wishlist"
+                }
+            };
+
+            // Render command lists
+            renderTextCommandList();
+            renderWebCommandList();
+            updateTextExport();
+            updateWebExport();
+
+            // Set up action change handler
+            document.getElementById('text-command-action').addEventListener('change', function() {
+                toggleOutputField();
+            });
+
+            // Set up output preview
+            document.getElementById('text-command-output').addEventListener('input', function() {
+                document.getElementById('text-output-preview').textContent = this.value;
+            });
+        };
+
+        // Tab switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active');
+        }
+
+        // Render command lists
+        function renderTextCommandList() {
+            const listElement = document.getElementById('text-command-list');
+            listElement.innerHTML = '';
+            
+            Object.keys(textCommands).forEach(cmd => {
+                const item = document.createElement('div');
+                item.className = `command-item ${currentTextCommand === cmd ? 'selected' : ''}`;
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'command-name';
+                nameSpan.textContent = cmd;
+                
+                const deleteBtn = document.createElement('span');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '&#10005;';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteCommand('text', cmd);
+                };
+                
+                item.appendChild(nameSpan);
+                item.appendChild(deleteBtn);
+                
+                item.onclick = () => selectCommand('text', cmd);
+                listElement.appendChild(item);
+            });
+        }
+
+        function renderWebCommandList() {
+            const listElement = document.getElementById('web-command-list');
+            listElement.innerHTML = '';
+            
+            Object.keys(webCommands).forEach(cmd => {
+                const item = document.createElement('div');
+                item.className = `command-item ${currentWebCommand === cmd ? 'selected' : ''}`;
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'command-name';
+                nameSpan.textContent = cmd;
+                
+                const deleteBtn = document.createElement('span');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '&#10005;';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteCommand('web', cmd);
+                };
+                
+                item.appendChild(nameSpan);
+                item.appendChild(deleteBtn);
+                
+                item.onclick = () => selectCommand('web', cmd);
+                listElement.appendChild(item);
+            });
+        }
+
+        // Select a command to edit
+        function selectCommand(type, name) {
+            if (type === 'text') {
+                currentTextCommand = name;
+                const command = textCommands[name];
+                
+                document.getElementById('text-command-name').value = name;
+                document.getElementById('text-command-description').value = command.description || '';
+                document.getElementById('text-command-action').value = command.action || 'text';
+                document.getElementById('text-command-output').value = command.output || '';
+                document.getElementById('text-output-preview').textContent = command.output || '';
+                
+                toggleOutputField();
+                document.getElementById('text-editor-title').textContent = `Edit Command: ${name}`;
+                renderTextCommandList();
+            } else {
+                currentWebCommand = name;
+                const command = webCommands[name];
+                
+                document.getElementById('web-command-name').value = name;
+                document.getElementById('web-command-description').value = command.description || '';
+                document.getElementById('web-command-url').value = command.url || '';
+                
+                document.getElementById('web-editor-title').textContent = `Edit Web Link: ${name}`;
+                renderWebCommandList();
+            }
+        }
+
+        // Add a new command
+        function addNewCommand(type) {
+            if (type === 'text') {
+                resetTextForm();
+                document.getElementById('text-editor-title').textContent = 'Add New Command';
+                currentTextCommand = '';
+            } else {
+                resetWebForm();
+                document.getElementById('web-editor-title').textContent = 'Add New Web Link';
+                currentWebCommand = '';
+            }
+        }
+
+        // Save a command
+        function saveTextCommand() {
+            const name = document.getElementById('text-command-name').value.trim();
+            if (!name) {
+                alert('Command name cannot be empty');
+                return;
+            }
+            
+            const description = document.getElementById('text-command-description').value.trim();
+            const action = document.getElementById('text-command-action').value;
+            
+            const command = {
+                description: description,
+                action: action
+            };
+            
+            if (action === 'text') {
+                command.output = document.getElementById('text-command-output').value;
+            }
+            
+            textCommands[name] = command;
+            
+            // If we've renamed a command, delete the old one
+            if (currentTextCommand && currentTextCommand !== name) {
+                delete textCommands[currentTextCommand];
+            }
+            
+            currentTextCommand = name;
+            renderTextCommandList();
+            updateTextExport();
+            
+            document.getElementById('text-editor-title').textContent = `Edit Command: ${name}`;
+        }
+
+        function saveWebCommand() {
+            const name = document.getElementById('web-command-name').value.trim();
+            if (!name) {
+                alert('Command name cannot be empty');
+                return;
+            }
+            
+            const description = document.getElementById('web-command-description').value.trim();
+            const url = document.getElementById('web-command-url').value.trim();
+            
+            if (!url) {
+                alert('URL cannot be empty');
+                return;
+            }
+            
+            const command = {
+                description: description,
+                url: url
+            };
+            
+            webCommands[name] = command;
+            
+            // If we've renamed a command, delete the old one
+            if (currentWebCommand && currentWebCommand !== name) {
+                delete webCommands[currentWebCommand];
+            }
+            
+            currentWebCommand = name;
+            renderWebCommandList();
+            updateWebExport();
+            
+            document.getElementById('web-editor-title').textContent = `Edit Web Link: ${name}`;
+        }
+
+        // Delete a command
+        function deleteCommand(type, name) {
+            if (!confirm(`Are you sure you want to delete the ${name} command?`)) {
+                return;
+            }
+            
+            if (type === 'text') {
+                delete textCommands[name];
+                if (currentTextCommand === name) {
+                    resetTextForm();
+                }
+                renderTextCommandList();
+                updateTextExport();
+            } else {
+                delete webCommands[name];
+                if (currentWebCommand === name) {
+                    resetWebForm();
+                }
+                renderWebCommandList();
+                updateWebExport();
+            }
+        }
+
+        // Reset forms
+        function resetTextForm() {
+            document.getElementById('text-command-name').value = '';
+            document.getElementById('text-command-description').value = '';
+            document.getElementById('text-command-action').value = 'text';
+            document.getElementById('text-command-output').value = '';
+            document.getElementById('text-output-preview').textContent = '';
+            document.getElementById('text-editor-title').textContent = 'Add New Command';
+            currentTextCommand = '';
+            toggleOutputField();
+            renderTextCommandList();
+        }
+
+        function resetWebForm() {
+            document.getElementById('web-command-name').value = '';
+            document.getElementById('web-command-description').value = '';
+            document.getElementById('web-command-url').value = '';
+            document.getElementById('web-editor-title').textContent = 'Add New Web Link';
+            currentWebCommand = '';
+            renderWebCommandList();
+        }
+
+        // Toggle output field based on action
+        function toggleOutputField() {
+            const action = document.getElementById('text-command-action').value;
+            const outputGroup = document.getElementById('text-output-group');
+            
+            if (action === 'text') {
+                outputGroup.classList.remove('hidden');
+            } else {
+                outputGroup.classList.add('hidden');
+            }
+        }
+
+        // Update export fields
+        function updateTextExport() {
+            const exportArea = document.getElementById('text-commands-export');
+            exportArea.value = JSON.stringify(textCommands, null, 2);
+        }
+
+        function updateWebExport() {
+            const exportArea = document.getElementById('web-commands-export');
+            exportArea.value = JSON.stringify(webCommands, null, 2);
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(elementId) {
+            const textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand('copy');
+            alert('Copied to clipboard!');
+        }
+
+        // Download JSON
+        function downloadJSON(filename, elementId) {
+            const content = document.getElementById(elementId).value;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:application/json;charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+    </script>
+</body>
+</html>
