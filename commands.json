@@ -47,12 +47,12 @@
     "action": "text",
     "output": "I dont know how to properly implement this command but I like the name."
   },
-  "help-custom": {
+ "help-custom": {
     "description": "Get information about customizing citrOS",
     "action": "text",
-    "output": "To customize citrOS termanal:\n1. Run start citros maker\n2. To customize the commands either \n3.   Edit the webcommands.json or commands.json \n4.   Run start command maker to generate the jsons easier"
-  },
-  "clear": {
+    "output": "To customize citrOS terminal:\n- Run start citros maker\n- To customize the commands either \n  - Edit the webcommands.json or commands.json \n  - Run start command maker to generate the jsons easier"
+},
+"clear": {
     "description": "Clear the terminal screen",
     "action": "clear"
   },
