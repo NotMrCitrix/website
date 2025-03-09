@@ -64,6 +64,11 @@
     "description": "Reload command configurations",
     "action": "reload"
   },
+  "babu": {
+    "description": "creature",
+    "action": "text",
+    "output": "I dont like them, they scare me, I want their wife "
+  },
   "start": {
     "description": "Launch applications",
     "action": "start"
