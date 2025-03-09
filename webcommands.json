@@ -1,4 +1,4 @@
- {
+{
   "banana": {
     "description": "Opens fake banana site",
     "url": "https://mrcitrix.xyz/banana"
@@ -14,5 +14,9 @@
   "wishlist": {
     "description": "My wishlist",
     "url": "https://mrcitrix.xyz/wishlist"
+  },
+  "source": {
+    "description": "Source code for the site",
+    "url": "https://github.com/NotMrCitrix/website/archive/refs/tags/termanal.zip"
   }
 }
