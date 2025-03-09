@@ -19,11 +19,11 @@
     "description": "Source code for the site",
     "url": "https://github.com/NotMrCitrix/website/archive/refs/tags/termanal.zip"
   },
-"command maker": {
+"command-maker": {
     "description": "Make custom commands easily",
     "url": "https://mrcitrix.xyz/command-maker"
   },
-  "citros maker": {
+  "citros-maker": {
     "description": "Source cusotm versions of this site",
     "url": "https://mrcitrix.xyz/maker"
   }
