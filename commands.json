@@ -50,7 +50,7 @@
   "help-custom": {
     "description": "Get information about customizing citrOS",
     "action": "text",
-    "output": "To customize citrOS:\n1. Edit commands.json for text commands\n2. Edit webcommands.json for web links\n3. Reload using the 'reload' command"
+    "output": "To customize citrOS termanal:\n1. Run start citros maker\n2. To customize the commands either \n3.   Edit the webcommands.json or commands.json \n4.   Run start command maker to generate the jsons easier"
   },
   "clear": {
     "description": "Clear the terminal screen",
