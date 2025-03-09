@@ -2,7 +2,7 @@
   "hello": {
     "description": "Say hello",
     "action": "text",
-    "output": "Hi :D"
+    "output": "Hi :D "
   },
   "date": {
     "description": "Display current date and time",
