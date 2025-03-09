@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>citrOS Messages</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #header {
+            background-color: #f8f8f8;
+            padding: 10px 15px;
+            text-align: center;
+            border-bottom: 1px solid #dddddd;
+            position: relative;
+        }
+        
+        #header h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        #terminal {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #dddddd;
+        }
+        
+        #command-input {
+            flex: 1;
+            border: 1px solid #dddddd;
+            border-radius: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #ffffff;
+            outline: none;
+        }
+        
+        #send-button {
+            margin-left: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #007aff;
+            color: white;
+            border: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 18px;
+            font-size: 16px;
+            line-height: 1.4;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background-color: #007aff;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .system-message {
+            align-self: flex-start;
+            background-color: #e9e9eb;
+            color: black;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .error-message {
+            align-self: flex-start;
+            background-color: #ffdddd;
+            color: #ff3333;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #8e8e93;
+            text-align: center;
+            margin: 5px 0 15px;
+        }
+        
+        /* Help styling */
+        .help-container {
+            background-color: #e9e9eb;
+            border-radius: 18px;
+            padding: 15px;
+            margin-bottom: 10px;
+            align-self: flex-start;
+            max-width: 80%;
+        }
+        
+        .help-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .help-command {
+            font-weight: bold;
+            color: #007aff;
+        }
+        
+        .help-desc {
+            color: #333333;
+        }
+        
+        .help-section {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        <h1>citrOS</h1>
+    </div>
+    
+    <div id="terminal"></div>
+    
+    <div id="input-container">
+        <input type="text" id="command-input" placeholder="Type a command..." autofocus>
+        <button id="send-button">↑</button>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const commandInput = document.getElementById('command-input');
+        const sendButton = document.getElementById('send-button');
+        
+        // Command storage
+        let commands = {};
+        let webCommands = {};
+        
+        // Add timestamp to messages
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+        
+        // Load commands from JSON files
+        async function loadCommandsFromJSON() {
+            try {
+                // Load text commands
+                const cmdResponse = await fetch('commands.json');
+                if (cmdResponse.ok) {
+                    commands = await cmdResponse.json();
+                    addSystemMessage('Commands loaded successfully.');
+                } else {
+                    addErrorMessage('Failed to load commands.json');
+                }
+                
+                // Load web commands for start
+                const webCmdResponse = await fetch('webcommands.json');
+                if (webCmdResponse.ok) {
+                    webCommands = await webCmdResponse.json();
+                    addSystemMessage('Web commands loaded successfully.');
+                } else {
+                    addErrorMessage('Failed to load webcommands.json');
+                }
+            } catch (error) {
+                addErrorMessage(`Error loading commands: ${error.message}`);
+            }
+            
+            // Welcome message
+            addSystemMessage('Welcome to citrOS v1.3.0\nType \'help\' to see available commands.');
+        }
+        
+        // Add message helpers
+        function addUserMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user-message';
+            messageDiv.textContent = text;
+            terminal.appendChild(messageDiv);
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getCurrentTime();
+            terminal.appendChild(timeDiv);
+            
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function addSystemMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system-message';
+            messageDiv.textContent = text;
+            terminal.appendChild(messageDiv);
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getCurrentTime();
+            terminal.appendChild(timeDiv);
+            
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function addErrorMessage(text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message error-message';
+            messageDiv.textContent = text;
+            terminal.appendChild(messageDiv);
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getCurrentTime();
+            terminal.appendChild(timeDiv);
+            
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function addHelpMessage(content) {
+            const helpDiv = document.createElement('div');
+            helpDiv.className = 'help-container';
+            helpDiv.innerHTML = content;
+            terminal.appendChild(helpDiv);
+            
+            const timeDiv = document.createElement('div');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = getCurrentTime();
+            terminal.appendChild(timeDiv);
+            
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        // Process command input
+        function processCommand() {
+            const commandLine = commandInput.value.trim();
+            if (commandLine === '') return;
+            
+            // Add user command to terminal
+            addUserMessage(commandLine);
+            
+            // Process the command
+            const cmdParts = commandLine.split(' ');
+            const cmd = cmdParts[0].toLowerCase();
+            const args = cmdParts.slice(1);
+            
+            // Core commands handling (these always work regardless of JSON)
+            if (cmd === 'help') {
+                let output = '<div class="help-title">Available commands:</div>';
+                
+                // List all available commands from the JSON
+                for (const cmdName in commands) {
+                    output += `<div><span class="help-command">${cmdName}</span> - <span class="help-desc">${commands[cmdName].description}</span></div>`;
+                }
+                
+                // Add the built-in start command
+                if (!commands.start) {
+                    output += `<div><span class="help-command">start</span> - <span class="help-desc">Launch applications</span></div>`;
+                }
+                
+                // Add the built-in reload command
+                if (!commands.reload) {
+                    output += `<div><span class="help-command">reload</span> - <span class="help-desc">Reload command configurations</span></div>`;
+                }
+                
+                // Display start subcommands
+                output += '<div class="help-section">Start subcommands:</div>';
+                for (const cmd in webCommands) {
+                    output += `<div><span class="help-command">start ${cmd}</span> - <span class="help-desc">${webCommands[cmd].description}</span></div>`;
+                }
+                
+                addHelpMessage(output);
+            } else if (cmd === 'clear') {
+                terminal.innerHTML = '';
+            } else if (cmd === 'reload') {
+                loadCommandsFromJSON();
+                addSystemMessage('Command configurations reloaded.');
+            } else if (cmd === 'start') {
+                if (!args || args.length === 0) {
+                    addErrorMessage('Error: Please specify what to start. Try "start about.html"');
+                } else {
+                    const target = args[0];
+                    if (webCommands[target]) {
+                        window.open(webCommands[target].url, '_blank');
+                        addSystemMessage(`Launching ${target}...`);
+                    } else {
+                        addErrorMessage(`Error: Unknown target "${target}"`);
+                    }
+                }
+            } 
+            // Normal JSON-defined commands
+            else if (commands[cmd]) {
+                const command = commands[cmd];
+                
+                // Process based on action or type
+                if (command.action === 'text' || command.text) {
+                    addSystemMessage(command.output || command.text);
+                } else if (command.action === 'date' || (command.type && command.type === 'date')) {
+                    const now = new Date();
+                    addSystemMessage(`Current date and time: ${now.toLocaleString()}`);
+                } else if (command.action === 'echo' || (command.type && command.type === 'echo')) {
+                    if (!args || args.length === 0) {
+                        addSystemMessage('Echo what?');
+                    } else {
+                        addSystemMessage(args.join(' '));
+                    }
+                } else {
+                    addSystemMessage(`Command ${cmd} is defined but has no valid action.`);
+                }
+            } else {
+                addErrorMessage(`Command not found: ${cmd}`);
+            }
+            
+            // Clear input
+            commandInput.value = '';
+        }
+        
+        // Event listeners
+        commandInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                processCommand();
+            }
+        });
+        
+        sendButton.addEventListener('click', function() {
+            processCommand();
+        });
+        
+        // Auto-focus input when clicking anywhere
+        document.body.addEventListener('click', function() {
+            commandInput.focus();
+        });
+        
+        // Load commands and initialize
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadCommandsFromJSON();
+        });
+    </script>
+</body>
+</html>
