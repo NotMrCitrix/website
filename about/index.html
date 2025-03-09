@@ -7,7 +7,7 @@
   <title>MrCitrix's Site</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Fullscreen background */
+   
     body {
       background-color: #121212;
       color: #e0e0e0;
@@ -19,7 +19,7 @@
       min-height: 100vh;
     }
 
-    /* Floating particles */
+ 
     .particles {
       position: fixed;
       top: 0;
@@ -53,7 +53,7 @@
       }
     }
 
-    /* Fullscreen background image with parallax effect */
+    
     .bg-image {
       position: fixed;
       top: 0;
@@ -68,7 +68,6 @@
       transition: all 0.5s ease;
     }
 
-    /* Content container with dark background */
     .content-wrapper {
       background: rgba(0, 0, 0, 0.7);
       padding: 30px;
@@ -88,7 +87,7 @@
       box-shadow: 0 0 30px rgba(155, 89, 182, 0.9);
     }
 
-    /* Style for header */
+    
     h1 {
       color: #ffffff;
       text-shadow: 0 0 10px #9B59B6, 0 0 20px #9B59B6, 0 0 30px #9B59B6;
@@ -106,7 +105,7 @@
       }
     }
 
-    /* Style for paragraphs */
+   
     p {
       font-size: 1.2em;
       line-height: 1.6;
@@ -114,7 +113,7 @@
       margin-bottom: 15px;
     }
 
-    /* Style for code */
+
     code {
       color: #9B59B6;
       background: rgba(155, 89, 182, 0.1);
@@ -129,23 +128,23 @@
       transform: scale(1.05);
     }
 
-    /* Style for strong text */
+   
     strong {
       color: #9B59B6;
     }
 
-    /* Style for em text */
+ 
     em {
       font-style: italic;
       color: #ccc;
     }
 
-    /* Hide unwanted SpaceHey content */
+
     .profile, .friends, .sidebar, .navbar, .footer, .header, .topbar, .spacehey-main-content {
       display: none !important;
     }
 
-    /* Absolute container for content */
+ 
     .spacehey-main-content {
       position: absolute;
       top: 0;
@@ -155,12 +154,12 @@
       z-index: 10;
     }
 
-    /* Adjust profile content */
+ 
     .profile-content {
       visibility: hidden;
     }
 
-    /* Skills section */
+
     .skills {
       display: flex;
       flex-wrap: wrap;
@@ -183,7 +182,7 @@
       transform: translateY(-5px);
     }
 
-    /* Projects section */
+   
     .projects {
       margin-top: 30px;
     }
@@ -202,7 +201,7 @@
       background: rgba(30, 30, 30, 0.7);
     }
 
-    /* Terminal effect */
+     
     .terminal {
       background: rgba(10, 10, 10, 0.9);
       border-radius: 5px;
@@ -433,6 +432,23 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    
+    /* Attribution */
+    .attribution {
+      text-align: center;
+      margin-top: 20px;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      background: transparent;
+    }
+    
+    .attribution a {
+      text-decoration: none;
+      color: #bf00ff;
+      text-shadow: 0 0 5px #bf00ff, 0 0 10px #bf00ff, 0 0 15px #bf00ff;
+      font-weight: bold;
+      background: transparent;
+    }
   </style>
 </head>
 <body>
@@ -511,17 +527,21 @@
     <div class="social-icons">
       <a href="https://github.com/NotMrCitrix" title="GitHub"><i class="fab fa-github"></i></a>
     </div>
+    
+    <div class="attribution">
+      <a href="https://toyhou.se/Terenry">Background by Terenry</a>
+    </div>
   </div>
 
   <script>
-    // Loading screen
+
     document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         document.querySelector('.loader').classList.add('hidden');
       }, 1500);
     });
 
-    // Create floating particles
+  
     function createParticles() {
       const particlesContainer = document.querySelector('.particles');
       const particleCount = 30;
@@ -530,20 +550,20 @@
         const particle = document.createElement('div');
         particle.classList.add('particle');
         
-        // Random size
+ 
         const size = Math.random() * 10 + 5;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
         
-        // Random position
+   
         particle.style.left = `${Math.random() * 100}vw`;
         particle.style.top = `${Math.random() * 100}vh`;
         
-        // Random animation duration
+      
         const duration = Math.random() * 20 + 10;
         particle.style.animationDuration = `${duration}s`;
         
-        // Random animation delay
+
         particle.style.animationDelay = `${Math.random() * 5}s`;
         
         particlesContainer.appendChild(particle);
@@ -585,13 +605,12 @@
 
     setTimeout(typeText, 2000);
 
-    // Cool mode toggle
+
     const themeToggle = document.querySelector('.theme-toggle');
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('cool-mode');
     });
 
-    // Parallax effect
     document.addEventListener('mousemove', (e) => {
       const x = e.clientX / window.innerWidth;
       const y = e.clientY / window.innerHeight;
@@ -599,7 +618,7 @@
       document.querySelector('.bg-image').style.transform = `translate(${-x * 20}px, ${-y * 20}px)`;
     });
 
-    // Interactive skill elements
+
     const skills = document.querySelectorAll('.skill');
     skills.forEach(skill => {
       skill.addEventListener('click', () => {
@@ -610,7 +629,6 @@
       });
     });
 
-    // Project card animation
     const projectCards = document.querySelectorAll('.project-card');
     projectCards.forEach(card => {
       card.addEventListener('click', () => {
@@ -621,7 +639,6 @@
       });
     });
 
-    // Smooth scrolling for navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -631,12 +648,5 @@
       });
     });
   </script>
-<div style="text-align: center; margin-top: 20px; padding: 10px; font-family: Arial, sans-serif;">
-  <a href="https://toyhou.se/Terenry" style="
-    text-decoration: none; 
-    color: #bf00ff; 
-    text-shadow: 0 0 5px #bf00ff, 0 0 10px #bf00ff, 0 0 15px #bf00ff; 
-    font-weight: bold;">Background by Terenry</a>
-</div>
 </body>
 </html>
