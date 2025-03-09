@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>citrOS Maker</title>
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #a5b4fc;
+      --secondary: #10b981;
+      --dark: #111827;
+      --darker: #0f172a;
+      --light: #e5e7eb;
+      --gray: #9ca3af;
+      --dark-gray: #374151;
+      --border-radius: 8px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--darker);
+      color: var(--light);
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .container {
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background-color: var(--dark);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .tagline {
+      color: var(--primary-light);
+      margin-top: 8px;
+      font-size: 1.1rem;
+    }
+    
+    .card {
+      background-color: var(--dark);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 30px;
+      margin-bottom: 30px;
+      border: 1px solid #2d3748;
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: white;
+      border-bottom: 2px solid var(--dark-gray);
+      padding-bottom: 10px;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+    
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--light);
+    }
+    
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--dark-gray);
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      transition: border 0.3s ease;
+      background-color: #1f2937;
+      color: white;
+    }
+    
+    input[type="color"] {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--dark-gray);
+      border-radius: var(--border-radius);
+      padding: 4px;
+      cursor: pointer;
+      background-color: #1f2937;
+    }
+    
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    }
+    
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .btn {
+      display: inline-block;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-secondary {
+      background-color: var(--secondary);
+      margin-left: 10px;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #0ea5e9;
+    }
+    
+    .btn-container {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .output-container {
+      position: relative;
+    }
+    
+    #output {
+      white-space: pre-wrap;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #2d3748;
+      width: 100%;
+    }
+    
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .copy-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .preview-container {
+      margin-top: 20px;
+      border: 1px solid var(--dark-gray);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+    
+    .preview-header {
+      background-color: #151e2d;
+      color: white;
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .preview-circle {
+      height: 12px;
+      width: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    
+    .red { background-color: #ef4444; }
+    .yellow { background-color: #f59e0b; }
+    .green { background-color: #10b981; }
+    
+    .preview-title {
+      margin-left: 10px;
+      font-size: 14px;
+    }
+    
+    .preview-content {
+      height: 300px;
+      overflow: auto;
+      background-color: #000;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--gray);
+      font-size: 14px;
+      border-top: 1px solid var(--dark-gray);
+      margin-top: 40px;
+      background-color: var(--dark);
+    }
+    
+    /* Syntax highlighting for the output */
+    .string { color: #a5d6ff; }
+    .property { color: #d2a8ff; }
+    .number { color: #f97583; }
+    .keyword { color: #ff7b72; }
+    .comment { color: #8b949e; }
+    
+    /* Code highlighting */
+    .hljs-tag {
+      color: #7ee787;
+    }
+    
+    .hljs-attr {
+      color: #d2a8ff;
+    }
+    
+    .hljs-string {
+      color: #a5d6ff;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #1a202c;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #4a5568;
+      border-radius: 6px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #718096;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>citrOS Maker</h1>
+    <p class="tagline">Create custom terminal like websites</p>
+  </header>
+  
+  <div class="container">
+    <div class="card">
+      <h2 class="card-title">Configuration</h2>
+      <form id="makerForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="siteTitle">Site Title</label>
+            <input type="text" id="siteTitle" value="citrOS Terminal">
+          </div>
+          
+          <div class="form-group">
+            <label for="version">Version</label>
+            <input type="text" id="version" value="v1.0.0">
+          </div>
+          
+          <div class="form-group">
+            <label for="bgColor">Background Color</label>
+            <input type="color" id="bgColor" value="#1e1e1e">
+          </div>
+          
+          <div class="form-group">
+            <label for="textColor">Text Color</label>
+            <input type="color" id="textColor" value="#00ff00">
+          </div>
+          
+          <div class="form-group">
+            <label for="promptColor">Prompt Color</label>
+            <input type="color" id="promptColor" value="#ffcc00">
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="welcomeMessage">Welcome Message</label>
+            <textarea id="welcomeMessage" rows="2">Welcome to citrOS v1.3.0
+Type 'help' to see available commands.</textarea>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="aboutText">About Text</label>
+            <textarea id="aboutText" rows="3">This terminal is powered by citrOS maker.</textarea>
+          </div>
+          
+          <div class="btn-container">
+            <button type="button" class="btn" onclick="generateSite()">Generate Website</button>
+            <button type="button" class="btn btn-secondary" onclick="previewSite()">Preview</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <div class="card">
+      <h2 class="card-title">Generated Code</h2>
+      <div class="output-container">
+        <textarea id="output" rows="20" readonly></textarea>
+        <button class="copy-btn" onclick="copyToClipboard()">Copy Code</button>
+      </div>
+    </div>
+    
+    <div class="card" id="previewCard" style="display: none;">
+      <h2 class="card-title">Preview</h2>
+      <div class="preview-container">
+        <div class="preview-header">
+          <div class="preview-circle red"></div>
+          <div class="preview-circle yellow"></div>
+          <div class="preview-circle green"></div>
+          <div class="preview-title" id="previewTitle">citrOS Terminal</div>
+        </div>
+        <div class="preview-content" id="previewContent">
+          <!-- Preview will be generated here -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer>
+    <p>citrOS Maker • A Terminal Website Generator</p>
+  </footer>
+  
+  <script>
+    function generateSite() {
+      // Get values from the form
+      const siteTitle = document.getElementById('siteTitle').value;
+      const bgColor = document.getElementById('bgColor').value;
+      const textColor = document.getElementById('textColor').value;
+      const promptColor = document.getElementById('promptColor').value;
+      const version = document.getElementById('version').value;
+      const welcomeMessage = document.getElementById('welcomeMessage').value;
+      const aboutText = document.getElementById('aboutText').value;
+      
+      // Build the HTML template using template literals
+      const htmlTemplate = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${siteTitle}</title>
+  <style>
+    body {
+      background-color: ${bgColor};
+      color: ${textColor};
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    #terminal {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    #input-line {
+      display: flex;
+      padding: 10px 20px;
+      background-color: #252525;
+    }
+    #prompt {
+      color: ${promptColor};
+      margin-right: 10px;
+    }
+    #command-input {
+      flex: 1;
+      background-color: transparent;
+      border: none;
+      color: #ffffff;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      outline: none;
+    }
+    .output-line {
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .prompt-text {
+      color: ${promptColor};
+    }
+    .command-text {
+      color: #ffffff;
+    }
+    .system-text {
+      color: #00aaff;
+    }
+    .error-text {
+      color: #ff3333;
+    }
+    .help-command {
+      color: ${promptColor};
+      font-weight: bold;
+    }
+    .help-desc {
+      color: #cccccc;
+    }
+    footer {
+      text-align: center;
+      padding: 5px;
+      background-color: #111;
+      color: #888;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="terminal">
+    <div class="output-line system-text">
+Welcome to citrOS ${version}
+Type 'help' to see available commands.
+    </div>
+  </div>
+  <div id="input-line">
+    <div id="prompt">citros~$</div>
+    <input type="text" id="command-input" autofocus>
+  </div>
+  <footer>
+    Made with citrOS maker
+  </footer>
+  <script>
+    const terminal = document.getElementById('terminal');
+    const commandInput = document.getElementById('command-input');
+    
+    // Command storage
+    let commands = {};
+    let webCommands = {};
+    
+    // Load commands from JSON files
+    async function loadCommandsFromJSON() {
+      try {
+        // Load text commands
+        const cmdResponse = await fetch('commands.json');
+        if (cmdResponse.ok) {
+          commands = await cmdResponse.json();
+          addOutputLine('Commands loaded successfully.', 'system-text');
+        } else {
+          addOutputLine('Failed to load commands.json', 'error-text');
+        }
+        
+        // Load web commands for start
+        const webCmdResponse = await fetch('webcommands.json');
+        if (webCmdResponse.ok) {
+          webCommands = await webCmdResponse.json();
+          addOutputLine('Web commands loaded successfully.', 'system-text');
+        } else {
+          addOutputLine('Failed to load webcommands.json', 'error-text');
+        }
+      } catch (error) {
+        addOutputLine(\`Error loading commands: \${error.message}\`, 'error-text');
+      }
+    }
+    
+    // Add output line helper
+    function addOutputLine(text, className = '') {
+      const outputLine = document.createElement('div');
+      outputLine.className = \`output-line \${className}\`;
+      outputLine.innerHTML = text;
+      terminal.appendChild(outputLine);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+    
+    // Process command input
+    function processCommand() {
+      const commandLine = commandInput.value.trim();
+      if (commandLine === '') return;
+      
+      // Display the command line
+      const commandOutput = document.createElement('div');
+      commandOutput.className = 'output-line';
+      commandOutput.innerHTML = \`<span class="prompt-text">citros~$</span> <span class="command-text">\${commandLine}</span>\`;
+      terminal.appendChild(commandOutput);
+      
+      // Process the command
+      const cmdParts = commandLine.split(' ');
+      const cmd = cmdParts[0].toLowerCase();
+      const args = cmdParts.slice(1);
+      
+      let result;
+      
+      // Core commands handling (always active)
+      if (cmd === 'help') {
+        let output = 'Available commands:\\n\\n';
+        for (const cmdName in commands) {
+          output += \`  <span class="help-command">\${cmdName}</span> - <span class="help-desc">\${commands[cmdName].description}</span>\\n\`;
+        }
+        if (!commands.start) {
+          output += '  <span class="help-command">start</span> - <span class="help-desc">Launch applications</span>\\n';
+        }
+        if (!commands.reload) {
+          output += '  <span class="help-command">reload</span> - <span class="help-desc">Reload command configurations</span>\\n';
+        }
+        output += '\\nStart subcommands:\\n\\n';
+        for (const key in webCommands) {
+          output += \`  <span class="help-command">start \${key}</span> - <span class="help-desc">\${webCommands[key].description}</span>\\n\`;
+        }
+        result = output;
+      } else if (cmd === 'clear') {
+        terminal.innerHTML = '';
+        result = '';
+      } else if (cmd === 'reload') {
+        loadCommandsFromJSON();
+        result = 'Command configurations reloaded.';
+      } else if (cmd === 'start') {
+        if (!args || args.length === 0) {
+          result = '<span class="error-text">Error: Please specify what to start. Try "start about.html"</span>';
+        } else {
+          const target = args[0];
+          if (webCommands[target]) {
+            window.open(webCommands[target].url, '_blank');
+            result = \`Launching \${target}...\`;
+          } else {
+            result = \`<span class="error-text">Error: Unknown target "\${target}"</span>\`;
+          }
+        }
+      } else if (commands[cmd]) {
+        const command = commands[cmd];
+        if (command.action === 'text' || command.text) {
+          result = command.output || command.text;
+        } else if (command.action === 'date' || (command.type && command.type === 'date')) {
+          const now = new Date();
+          result = \`Current date and time: \${now.toLocaleString()}\`;
+        } else if (command.action === 'echo' || (command.type && command.type === 'echo')) {
+          if (!args || args.length === 0) {
+            result = 'Echo what?';
+          } else {
+            result = args.join(' ');
+          }
+        } else {
+          result = \`Command \${cmd} is defined but has no valid action.\`;
+        }
+      } else {
+        result = \`<span class="error-text">Command not found: \${cmd}</span>\`;
+      }
+      
+      // Display the result
+      if (result) {
+        const resultOutput = document.createElement('div');
+        resultOutput.className = 'output-line';
+        resultOutput.innerHTML = result;
+        terminal.appendChild(resultOutput);
+      }
+      
+      commandInput.value = '';
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+    
+    commandInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        processCommand();
+      }
+    });
+    
+    document.body.addEventListener('click', function() {
+      commandInput.focus();
+    });
+    
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadCommandsFromJSON();
+    });
+  <\/script>
+</body>
+</html>`;
+      
+      // Display the generated HTML code for the user to copy or save
+      document.getElementById('output').value = htmlTemplate;
+      
+      // Show the preview card if hidden
+      document.getElementById('previewCard').style.display = 'block';
+      
+      // Update the preview
+      previewSite();
+    }
+    
+    function previewSite() {
+      // Get form values
+      const siteTitle = document.getElementById('siteTitle').value;
+      const bgColor = document.getElementById('bgColor').value;
+      const textColor = document.getElementById('textColor').value;
+      const promptColor = document.getElementById('promptColor').value;
+      const version = document.getElementById('version').value;
+      const welcomeMessage = document.getElementById('welcomeMessage').value;
+      
+      // Update preview title
+      document.getElementById('previewTitle').textContent = siteTitle;
+      
+      // Create preview content
+      const previewContent = document.getElementById('previewContent');
+      previewContent.style.backgroundColor = bgColor;
+      previewContent.style.color = textColor;
+      previewContent.innerHTML = '';
+      
+      // Add welcome message
+      const welcomeDiv = document.createElement('div');
+      welcomeDiv.style.padding = '20px';
+      welcomeDiv.style.fontFamily = 'Courier New, monospace';
+      welcomeDiv.style.whiteSpace = 'pre-wrap';
+      welcomeDiv.style.color = '#00aaff';
+      welcomeDiv.textContent = welcomeMessage;
+      previewContent.appendChild(welcomeDiv);
+      
+      // Add command prompt
+      const promptDiv = document.createElement('div');
+      promptDiv.style.display = 'flex';
+      promptDiv.style.padding = '0 20px 20px';
+      promptDiv.style.fontFamily = 'Courier New, monospace';
+      promptDiv.style.backgroundColor = bgColor;
+      
+      const promptSpan = document.createElement('span');
+      promptSpan.style.color = promptColor;
+      promptSpan.textContent = 'citros~$';
+      promptDiv.appendChild(promptSpan);
+      
+      const cursor = document.createElement('span');
+      cursor.textContent = ' ▋';
+      cursor.style.color = 'white';
+      cursor.style.marginLeft = '5px';
+      cursor.style.animation = 'blink 1s step-end infinite';
+      promptDiv.appendChild(cursor);
+      
+      // Add animation style
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      previewContent.appendChild(promptDiv);
+      
+      // Show the preview card
+      document.getElementById('previewCard').style.display = 'block';
+    }
+    
+    function copyToClipboard() {
+      const output = document.getElementById('output');
+      output.select();
+      document.execCommand('copy');
+      
+      const copyBtn = document.querySelector('.copy-btn');
+      const originalText = copyBtn.textContent;
+      copyBtn.textContent = 'Copied!';
+      
+      setTimeout(() => {
+        copyBtn.textContent = originalText;
+      }, 2000);
+    }
+    
+    // Expose functions globally for inline event handling
+    window.generateSite = generateSite;
+    window.previewSite = previewSite;
+    window.copyToClipboard = copyToClipboard;
+    
+    // Add syntax highlighting to output textarea
+    function highlightSyntax() {
+      // This is a simplified version that would be replaced with a proper syntax highlighter in production
+      const output = document.getElementById('output');
+      if (output.value) {
+        setTimeout(() => {
+          // Keep the textarea selected if it was
+          let isSelected = document.activeElement === output;
+          
+          // Show preview automatically when code is generated
+          if (!document.getElementById('previewCard').style.display || 
+              document.getElementById('previewCard').style.display === 'none') {
+            previewSite();
+          }
+          
+          if (isSelected) output.focus();
+        }, 100);
+      }
+    }
+    
+    // Check for dark mode preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      // Already in dark mode
+    } else {
+      // User might be using light mode, but we're forcing dark mode
+    }
+  </script>
+</body>
+</html>
