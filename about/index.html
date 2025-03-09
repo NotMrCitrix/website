@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>MrCitrix's Site</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Fullscreen background */
     body {
@@ -15,12 +15,46 @@
       margin: 0;
       padding: 0;
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* Fullscreen background image */
-    body::before {
-      content: "";
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(155, 89, 182, 0.4);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Fullscreen background image with parallax effect */
+    .bg-image {
       position: fixed;
       top: 0;
       left: 0;
@@ -29,7 +63,9 @@
       background: url("https://c10.patreonusercontent.com/4/patreon-media/p/post/123247329/55cdd0d5f9df4dc0bb229d63b7b3530b/eyJxIjoxMDAsIndlYnAiOjB9/1.png?token-time=1742688000&token-hash=Hv7BuWItt5CiW7l9f_6jrd9CKwfsdcOuoR7La6JIsYI%3D") no-repeat center center fixed;
       background-size: cover;
       filter: blur(5px);
-      z-index: -1;
+      z-index: -2;
+      transform: translateZ(0);
+      transition: all 0.5s ease;
     }
 
     /* Content container with dark background */
@@ -40,10 +76,16 @@
       box-shadow: 0 0 20px rgba(155, 89, 182, 0.7);
       width: 90%;
       max-width: 800px;
-      margin: 30px auto;
+      margin: 50px auto;
       text-align: center;
       z-index: 1;
       position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .content-wrapper:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 30px rgba(155, 89, 182, 0.9);
     }
 
     /* Style for header */
@@ -52,6 +94,16 @@
       text-shadow: 0 0 10px #9B59B6, 0 0 20px #9B59B6, 0 0 30px #9B59B6;
       font-size: 2.5em;
       margin-bottom: 15px;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #9B59B6, 0 0 20px #9B59B6;
+      }
+      to {
+        text-shadow: 0 0 15px #9B59B6, 0 0 25px #9B59B6, 0 0 35px #9B59B6;
+      }
     }
 
     /* Style for paragraphs */
@@ -69,6 +121,12 @@
       padding: 0 5px;
       border-radius: 3px;
       font-size: 1.1em;
+      transition: all 0.3s ease;
+    }
+
+    code:hover {
+      background: rgba(155, 89, 182, 0.3);
+      transform: scale(1.05);
     }
 
     /* Style for strong text */
@@ -83,14 +141,7 @@
     }
 
     /* Hide unwanted SpaceHey content */
-    .profile,
-    .friends,
-    .sidebar,
-    .navbar,
-    .footer,
-    .header,
-    .topbar,
-    .spacehey-main-content {
+    .profile, .friends, .sidebar, .navbar, .footer, .header, .topbar, .spacehey-main-content {
       display: none !important;
     }
 
@@ -108,16 +159,477 @@
     .profile-content {
       visibility: hidden;
     }
+
+    /* Skills section */
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin: 30px 0;
+    }
+
+    .skill {
+      background: rgba(155, 89, 182, 0.2);
+      border: 1px solid rgba(155, 89, 182, 0.5);
+      padding: 10px 20px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .skill:hover {
+      background: rgba(155, 89, 182, 0.4);
+      transform: translateY(-5px);
+    }
+
+    /* Projects section */
+    .projects {
+      margin-top: 30px;
+    }
+
+    .project-card {
+      background: rgba(20, 20, 20, 0.7);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .project-card:hover {
+      transform: scale(1.02);
+      background: rgba(30, 30, 30, 0.7);
+    }
+
+    /* Terminal effect */
+    .terminal {
+      background: rgba(10, 10, 10, 0.9);
+      border-radius: 5px;
+      padding: 15px;
+      font-family: 'Courier New', monospace;
+      text-align: left;
+      margin: 20px 0;
+      height: 150px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 5px;
+    }
+
+    .terminal-controls span {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .terminal-close {
+      background-color: #ff5f56;
+    }
+
+    .terminal-minimize {
+      background-color: #ffbd2e;
+    }
+
+    .terminal-maximize {
+      background-color: #27c93f;
+    }
+
+    .terminal-content {
+      color: #0f0;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background-color: #0f0;
+      animation: blink 1s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    
+    /* Cool navigation */
+    .nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .nav-link {
+      color: #9B59B6;
+      text-decoration: none;
+      padding: 5px 15px;
+      border-radius: 20px;
+      background: rgba(155, 89, 182, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background: rgba(155, 89, 182, 0.3);
+      transform: translateY(-3px);
+    }
+
+    /* Website link */
+    .website-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(155, 89, 182, 0.3);
+      color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .website-link:hover {
+      background: rgba(155, 89, 182, 0.5);
+      transform: translateY(-3px);
+    }
+
+    /* Social media icons */
+    .social-icons {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .social-icons i {
+      font-size: 24px;
+      color: #9B59B6;
+      transition: all 0.3s ease;
+    }
+
+    .social-icons i:hover {
+      transform: scale(1.2) rotate(5deg);
+      color: #8e44ad;
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(155, 89, 182, 0.3);
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(30deg);
+      background: rgba(155, 89, 182, 0.5);
+    }
+
+    /* Cool mode styles */
+    .cool-mode .bg-image {
+      filter: hue-rotate(180deg) blur(5px);
+    }
+
+    .cool-mode .content-wrapper {
+      background: rgba(0, 20, 40, 0.7);
+      box-shadow: 0 0 20px rgba(89, 155, 182, 0.7);
+    }
+
+    .cool-mode h1 {
+      text-shadow: 0 0 10px #59B6B6, 0 0 20px #59B6B6, 0 0 30px #59B6B6;
+    }
+
+    .cool-mode code {
+      color: #59B6B6;
+      background: rgba(89, 155, 182, 0.1);
+    }
+
+    .cool-mode .skill {
+      background: rgba(89, 155, 182, 0.2);
+      border: 1px solid rgba(89, 155, 182, 0.5);
+    }
+
+    .cool-mode .skill:hover {
+      background: rgba(89, 155, 182, 0.4);
+    }
+
+    .cool-mode .nav-link {
+      color: #59B6B6;
+      background: rgba(89, 155, 182, 0.1);
+    }
+
+    .cool-mode .nav-link:hover {
+      background: rgba(89, 155, 182, 0.3);
+    }
+
+    .cool-mode .social-icons i {
+      color: #59B6B6;
+    }
+
+    .cool-mode .social-icons i:hover {
+      color: #44ad8e;
+    }
+
+    .cool-mode .website-link {
+      background: rgba(89, 155, 182, 0.3);
+    }
+
+    .cool-mode .website-link:hover {
+      background: rgba(89, 155, 182, 0.5);
+    }
+
+    /* Loading animation */
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #121212;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-content {
+      text-align: center;
+    }
+
+    .loader-icon {
+      width: 50px;
+      height: 50px;
+      border: 3px solid transparent;
+      border-top: 3px solid #9B59B6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
-
 <body>
+  <!-- Loading screen -->
+  <div class="loader">
+    <div class="loader-content">
+      <div class="loader-icon"></div>
+      <h2>Loading MrCitrix's Site...</h2>
+    </div>
+  </div>
+
+  <!-- Website link at the top -->
+  <a href="https://mrcitrix.xyz" class="website-link">mrcitrix.xyz</a>
+
+  <!-- Theme toggle button -->
+  <button class="theme-toggle" title="Toggle Cool Mode">
+    <i class="fas fa-snowflake"></i>
+  </button>
+
+  <!-- Background elements -->
+  <div class="bg-image"></div>
+  <div class="particles"></div>
+
   <!-- Your custom content -->
   <div class="content-wrapper">
     <h1>Hi, I'm MrCitrix</h1>
-    <p>I am a <code>python</code> and <code>web developer</code></p>
-    <p>I am currently learning <code>React</code> and backend development with <code>Flask</code></p>
-  </div>
-</body>
+    
+    <div class="nav">
+      <a href="#about" class="nav-link">About</a>
+      <a href="#skills" class="nav-link">Skills</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="#contact" class="nav-link">Contact</a>
+    </div>
 
+    <section id="about">
+      <p>I am a <code>python</code> and <code>web developer</code> passionate about programming (almost) usefull stuff.</p>
+      <p>I am currently learning <code>React</code> and backend development with <code>Flask</code></p>
+    </section>
+
+    <section id="skills" class="skills">
+      <div class="skill">Python</div>
+      <div class="skill">HTML/CSS</div>
+      <div class="skill">JavaScript</div>
+      <div class="skill">React</div>
+      <div class="skill">Flask</div>
+      <div class="skill">Git</div>
+    </section>
+
+    <section id="terminal" class="terminal">
+      <div class="terminal-header">
+        <span>mrCitrix@dev: ~</span>
+        <div class="terminal-controls">
+          <span class="terminal-minimize"></span>
+          <span class="terminal-maximize"></span>
+          <span class="terminal-close"></span>
+        </div>
+      </div>
+      <div class="terminal-content">
+        <div id="terminal-text"></div>
+        <span class="cursor"></span>
+      </div>
+    </section>
+
+    <section id="projects" class="projects">
+      <h2>My favourite sites</h2>
+      <div class="project-card">
+        <h3>citrOS</h3>
+        <p>A web application that acts like a termnal with some functions and looks cool</p>
+      </div>
+      <div class="project-card">
+        <h3>Straight Banana</h3>
+        <p>A site that isnt that cool but I like it</p>
+      </div>
+    </section>
+
+    <div class="social-icons">
+      <a href="https://github.com/NotMrCitrix" title="GitHub"><i class="fab fa-github"></i></a>
+    </div>
+  </div>
+
+  <script>
+    // Loading screen
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.querySelector('.loader').classList.add('hidden');
+      }, 1500);
+    });
+
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.querySelector('.particles');
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random size
+        const size = Math.random() * 10 + 5;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // Random position
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.top = `${Math.random() * 100}vh`;
+        
+        // Random animation duration
+        const duration = Math.random() * 20 + 10;
+        particle.style.animationDuration = `${duration}s`;
+        
+        // Random animation delay
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+    
+    createParticles();
+
+    // Terminal typing effect
+    const terminalText = document.getElementById('terminal-text');
+    const messages = [
+      "Welcome to MrCitrix's terminal...",
+      "Loading projects...",
+      "Running npm install...",
+      "import info from brain",
+      "def hello_world():",
+      "    return 'Hello :D'",
+      "Starting development server...",
+      "Server running at http://localhost:2468"
+    ];
+
+    let messageIndex = 0;
+    let charIndex = 0;
+
+    function typeText() {
+      if (messageIndex < messages.length) {
+        if (charIndex < messages[messageIndex].length) {
+          terminalText.innerHTML += messages[messageIndex].charAt(charIndex);
+          charIndex++;
+          setTimeout(typeText, 50);
+        } else {
+          terminalText.innerHTML += '<br>';
+          messageIndex++;
+          charIndex = 0;
+          setTimeout(typeText, 500);
+        }
+      }
+    }
+
+    setTimeout(typeText, 2000);
+
+    // Cool mode toggle
+    const themeToggle = document.querySelector('.theme-toggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('cool-mode');
+    });
+
+    // Parallax effect
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX / window.innerWidth;
+      const y = e.clientY / window.innerHeight;
+      
+      document.querySelector('.bg-image').style.transform = `translate(${-x * 20}px, ${-y * 20}px)`;
+    });
+
+    // Interactive skill elements
+    const skills = document.querySelectorAll('.skill');
+    skills.forEach(skill => {
+      skill.addEventListener('click', () => {
+        skill.style.transform = 'scale(1.1) rotate(5deg)';
+        setTimeout(() => {
+          skill.style.transform = '';
+        }, 500);
+      });
+    });
+
+    // Project card animation
+    const projectCards = document.querySelectorAll('.project-card');
+    projectCards.forEach(card => {
+      card.addEventListener('click', () => {
+        card.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          card.style.transform = '';
+        }, 300);
+      });
+    });
+
+    // Smooth scrolling for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
 </html>
