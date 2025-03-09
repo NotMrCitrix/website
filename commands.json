@@ -45,7 +45,7 @@
   "cat": {
     "description": "Display contents of a file",
     "action": "text",
-    "output": "This is a simulated cat command. In a real terminal, it would show file contents."
+    "output": "I dont know how to properly implement this command but I like the name."
   },
   "help-custom": {
     "description": "Get information about customizing citrOS",
