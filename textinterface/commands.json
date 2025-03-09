@@ -1,0 +1,76 @@
+{
+  "hello": {
+    "description": "Say hello",
+    "action": "text",
+    "output": "Hi :D "
+  },
+  "date": {
+    "description": "Display current date and time",
+    "action": "date"
+  },
+  "whoami": {
+    "description": "Display current user information",
+    "action": "text",
+    "output": "Current user: guest\nPermission level: user"
+  },
+  "echo": {
+    "description": "Echo the provided text",
+    "action": "echo"
+  },
+  "motd": {
+    "description": "Display message of the day",
+    "action": "text",
+    "output": "Message of the day: Quit whilst your ahead"
+  },
+  "ver": {
+    "description": "Display citrOS version information",
+    "action": "text",
+    "output": "citrOS v1.3.0\nBuild date: March 8, 2025"
+  },
+  "credits": {
+    "description": "Display credits",
+    "action": "text",
+    "output": "citrOS developed by MrCitrix"
+  },
+  "about": {
+    "description": "Display information about citrOS",
+    "action": "text",
+    "output": "citrOS - A fake web terminal that I think looks cool\nVersion 1.3.0\nDeveloped with ♥"
+  },
+  "ls": {
+    "description": "List available directories",
+    "action": "text",
+    "output": "Documents/\nPictures/\nMusic/\nDownloads/\nDesktop/"
+  },
+  "cat": {
+    "description": "Display contents of a file",
+    "action": "text",
+    "output": "I dont know how to properly implement this command but I like the name."
+  },
+  "help-custom": {
+    "description": "Get information about customizing citrOS",
+    "action": "text",
+    "output": "To customize citrOS termanal:\n1. Run start citros maker\n2. To customize the commands either \n3.   Edit the webcommands.json or commands.json \n4.   Run start command maker to generate the jsons easier"
+  },
+  "clear": {
+    "description": "Clear the terminal screen",
+    "action": "clear"
+  },
+  "help": {
+    "description": "Display available commands",
+    "action": "help"
+  },
+  "reload": {
+    "description": "Reload command configurations",
+    "action": "reload"
+  },
+  "babu": {
+    "description": "creature",
+    "action": "text",
+    "output": "I dont like them, they scare me, I want their wife "
+  },
+  "start": {
+    "description": "Launch applications",
+    "action": "start"
+  }
+}

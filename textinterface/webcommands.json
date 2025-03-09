@@ -1,0 +1,30 @@
+{
+  "banana": {
+    "description": "Opens fake banana site",
+    "url": "https://mrcitrix.xyz/banana"
+  },
+  "about": {
+    "description": "View projects portfolio",
+    "url": "https://mrcitrix.xyz/about"
+  },
+  "funnystuff": {
+    "description": "Fake drink website",
+    "url": "https://mrcitrix.xyz/funnystuff"
+  },
+  "wishlist": {
+    "description": "My wishlist",
+    "url": "https://mrcitrix.xyz/wishlist"
+  },
+  "source": {
+    "description": "Source code for the site",
+    "url": "https://github.com/NotMrCitrix/website/archive/refs/tags/termanal.zip"
+  },
+"command maker": {
+    "description": "Make custom commands easily",
+    "url": "https://mrcitrix.xyz/command-maker"
+  },
+  "citros maker": {
+    "description": "Source cusotm versions of this site",
+    "url": "https://mrcitrix.xyz/maker"
+  }
+}
