@@ -6,7 +6,8 @@
   "about": {
     "description": "View projects portfolio",
     "url": "about/"
-"about-old": {
+  },
+  "about-old": {
     "description": "View old projects portfolio",
     "url": "about-old/"
   },
@@ -22,12 +23,12 @@
     "description": "Source code for the site",
     "url": "https://github.com/NotMrCitrix/website/archive/refs/tags/termanal.zip"
   },
-"command-maker": {
+  "command-maker": {
     "description": "Make custom commands easily",
     "url": "command-maker/"
   },
   "citros-maker": {
-    "description": "Source cusotm versions of this site",
+    "description": "Source custom versions of this site",
     "url": "maker/"
   }
 }
