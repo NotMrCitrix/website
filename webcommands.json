@@ -1,19 +1,19 @@
 {
   "banana": {
     "description": "Opens fake banana site",
-    "url": "https://mrcitrix.xyz/banana"
+    "url": "banana/"
   },
   "about": {
     "description": "View projects portfolio",
-    "url": "https://mrcitrix.xyz/about"
+    "url": "about/"
   },
   "funnystuff": {
     "description": "Fake drink website",
-    "url": "https://mrcitrix.xyz/funnystuff"
+    "url": "funnystuff/"
   },
   "wishlist": {
     "description": "My wishlist",
-    "url": "https://mrcitrix.xyz/wishlist"
+    "url": "wishlist/"
   },
   "source": {
     "description": "Source code for the site",
@@ -21,10 +21,10 @@
   },
 "command-maker": {
     "description": "Make custom commands easily",
-    "url": "https://mrcitrix.xyz/command-maker"
+    "url": "command-maker/"
   },
   "citros-maker": {
     "description": "Source cusotm versions of this site",
-    "url": "https://mrcitrix.xyz/maker"
+    "url": "maker/"
   }
 }
