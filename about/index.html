@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>MrCitrix's Site</title>
+  <title>MrCitrix's Site (cooler) </title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-   
     body {
       background-color: #121212;
       color: #e0e0e0;
@@ -19,7 +18,6 @@
       min-height: 100vh;
     }
 
- 
     .particles {
       position: fixed;
       top: 0;
@@ -52,7 +50,6 @@
         opacity: 0;
       }
     }
-
     
     .bg-image {
       position: fixed;
@@ -84,7 +81,6 @@
     .content-wrapper:hover {
       transform: translateY(-5px);
     }
-
     
     h1 {
       color: #ffffff;
@@ -102,7 +98,6 @@
         text-shadow: 0 0 15px #9B59B6, 0 0 25px #9B59B6, 0 0 35px #9B59B6;
       }
     }
-
    
     p {
       font-size: 1.2em;
@@ -110,7 +105,6 @@
       color: #e0e0e0;
       margin-bottom: 15px;
     }
-
 
     code {
       color: #9B59B6;
@@ -125,38 +119,19 @@
       background: rgba(155, 89, 182, 0.3);
       transform: scale(1.05);
     }
-
    
     strong {
       color: #9B59B6;
     }
-
  
     em {
       font-style: italic;
       color: #ccc;
     }
 
-
-    .profile, .friends, .sidebar, .navbar, .footer, .header, .topbar, .spacehey-main-content {
-      display: none !important;
-    }
-
- 
-    .spacehey-main-content {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10;
-    }
-
- 
     .profile-content {
       visibility: hidden;
     }
-
 
     .skills {
       display: flex;
@@ -179,7 +154,6 @@
       background: rgba(155, 89, 182, 0.4);
       transform: translateY(-5px);
     }
-
    
     .projects {
       margin-top: 30px;
@@ -198,7 +172,6 @@
       transform: scale(1.02);
       background: rgba(30, 30, 30, 0.7);
     }
-
      
     .terminal {
       background: rgba(10, 10, 10, 0.9);
@@ -407,16 +380,19 @@
 
     .loader-content {
       text-align: center;
+      font-family: 'Courier New', monospace;
+      color: #0f0;
+      background: #000;
+      padding: 20px;
+      border-radius: 5px;
+      width: 80%;
+      max-width: 600px;
     }
 
-    .loader-icon {
-      width: 50px;
-      height: 50px;
-      border: 3px solid transparent;
-      border-top: 3px solid #9B59B6;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
+    .loader-text {
+      text-align: left;
+      white-space: pre-line;
+      line-height: 1.5;
     }
 
     @keyframes spin {
@@ -439,21 +415,156 @@
       font-weight: bold;
       background: transparent;
     }
+    
+    .music-player {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(155, 89, 182, 0.2);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 100;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .music-player:hover {
+      background: rgba(155, 89, 182, 0.4);
+      transform: translateY(-3px);
+    }
+    
+    .album-cover {
+      width: 60px;
+      height: 60px;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .album-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .song-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .song-title {
+      font-weight: bold;
+      color: #fff;
+      margin: 0;
+      font-size: 0.9em;
+      text-shadow: 0 0 5px rgba(155, 89, 182, 0.7);
+    }
+    
+    .artist-name {
+      font-size: 0.8em;
+      color: #ddd;
+      margin: 0;
+    }
+    
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .control-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+    
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    
+    .volume-control {
+      width: 60px;
+    }
+    
+    .cool-mode .music-player {
+      background: rgba(89, 155, 182, 0.2);
+    }
+    
+    .cool-mode .music-player:hover {
+      background: rgba(89, 155, 182, 0.4);
+    }
+    
+    /* Skip hint style */
+    .skip-hint {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(155, 89, 182, 0.7);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1001;
+    }
+    
+    .skip-hint.visible {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
+  <audio id="bgMusic" autoplay loop>
+    <source src="song.mp3" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
   <div class="loader">
     <div class="loader-content">
-      <div class="loader-icon"></div>
-      <h2>Loading MrCitrix's Site...</h2>
+      <div class="loader-text" id="loaderText"></div>
     </div>
   </div>
+  
+  <div class="skip-hint" id="skipHint">Hold SPACE to speed up, SPACE+CLICK to skip</div>
 
   <a href="https://mrcitrix.xyz" class="website-link">mrcitrix.xyz</a>
 
   <button class="theme-toggle" title="Toggle Cool Mode">
     <i class="fas fa-snowflake"></i>
   </button>
+
+  <div class="music-player">
+    <div class="album-cover">
+      <img src="baseimg.webp" alt="Mysterious Place by struumbug">
+    </div>
+    <div class="song-info">
+      <p class="song-title">Mysterious Place</p>
+      <p class="artist-name">struumbug</p>
+    </div>
+    <div class="player-controls">
+      <button class="control-btn" id="playPauseBtn" title="Play/Pause">
+        <i class="fas fa-pause"></i>
+      </button>
+      <input type="range" min="0" max="1" step="0.1" value="1.0" class="volume-control" id="volumeControl" title="Volume">
+    </div>
+  </div>
 
   <div class="bg-image"></div>
   <div class="particles"></div>
@@ -519,14 +630,162 @@
   </div>
 
   <script>
-
     document.addEventListener('DOMContentLoaded', () => {
+      const loaderText = document.getElementById('loaderText');
+      const loader = document.querySelector('.loader');
+      const skipHint = document.getElementById('skipHint');
+      const bootSequence = [
+        "Loading site...",
+        "npm run build",
+        "npm start",
+        "Starting development server... DO NOT USE IN PROD!",
+        "Server running at http://localhost:8000",
+        "Connecting..."
+      ];
+      
+      let currentLine = 0;
+      let currentChar = 0;
+      let isSpaceDown = false;
+      let hintTimeout;
+      
+      // Function to type the boot sequence
+      function typeBootSequence() {
+        if (currentLine < bootSequence.length) {
+          if (currentChar === 0) {
+            if (currentLine > 0) {
+              loaderText.innerHTML += '\n';
+            }
+            loaderText.innerHTML += '> ';
+          }
+          
+          if (currentChar < bootSequence[currentLine].length) {
+            loaderText.innerHTML += bootSequence[currentLine].charAt(currentChar);
+            currentChar++;
+            
+            // Speed is determined by whether space is held down
+            const speed = isSpaceDown ? 5 : (Math.random() * 50 + 20);
+            setTimeout(typeBootSequence, speed);
+          } else {
+            currentLine++;
+            currentChar = 0;
+            setTimeout(typeBootSequence, isSpaceDown ? 50 : 500);
+          }
+        } else {
+          setTimeout(() => {
+            loader.classList.add('hidden');
+            skipHint.classList.remove('visible');
+          }, 800);
+        }
+      }
+      
+      // Start the boot sequence
+      typeBootSequence();
+      
+      // Show hint after a brief delay
       setTimeout(() => {
-        document.querySelector('.loader').classList.add('hidden');
+        skipHint.classList.add('visible');
+        
+        // Auto-hide the hint after 5 seconds
+        hintTimeout = setTimeout(() => {
+          skipHint.classList.remove('visible');
+        }, 5000);
       }, 1500);
+      
+      // Space key handler
+      document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && !loader.classList.contains('hidden')) {
+          isSpaceDown = true;
+          e.preventDefault(); // Prevent page scroll
+          
+          // Keep hint visible while space is held
+          clearTimeout(hintTimeout);
+          skipHint.classList.add('visible');
+        }
+      });
+      
+      document.addEventListener('keyup', (e) => {
+        if (e.code === 'Space') {
+          isSpaceDown = false;
+          
+          // Hide hint after space is released (after a delay)
+          hintTimeout = setTimeout(() => {
+            skipHint.classList.remove('visible');
+          }, 2000);
+        }
+      });
+      
+      // Space + click handler to skip the entire sequence
+      document.addEventListener('click', (e) => {
+        if (isSpaceDown && !loader.classList.contains('hidden')) {
+          // Skip the boot sequence entirely
+          currentLine = bootSequence.length;
+          loaderText.innerHTML = bootSequence.map(line => `> ${line}`).join('\n');
+          loader.classList.add('hidden');
+          skipHint.classList.remove('visible');
+        }
+      });
+      
+      // Terminal text animation (same controls)
+      const terminalText = document.getElementById('terminal-text');
+      let messageIndex = 0;
+      let charIndex = 0;
+      
+      function typeText() {
+        if (messageIndex < bootSequence.length) {
+          if (charIndex === 0) {
+            if (messageIndex > 0) {
+              terminalText.innerHTML += '<br>';
+            }
+            terminalText.innerHTML += '> ';
+          }
+          
+          if (charIndex < bootSequence[messageIndex].length) {
+            terminalText.innerHTML += bootSequence[messageIndex].charAt(charIndex);
+            charIndex++;
+            setTimeout(typeText, isSpaceDown ? 5 : 50);
+          } else {
+            messageIndex++;
+            charIndex = 0;
+            setTimeout(typeText, isSpaceDown ? 50 : 500);
+          }
+        }
+      }
+      
+      setTimeout(typeText, 2000);
+
+      const audio = document.getElementById('bgMusic');
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const volumeControl = document.getElementById('volumeControl');
+      
+      audio.volume = 1.0;
+      volumeControl.value = 1.0;
+      
+      playPauseBtn.addEventListener('click', () => {
+        if (audio.paused) {
+          audio.play();
+          playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        } else {
+          audio.pause();
+          playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
+      });
+      
+      volumeControl.addEventListener('input', () => {
+        audio.volume = volumeControl.value;
+      });
+      
+      const playPromise = audio.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.log("Autoplay started successfully");
+        }).catch(error => {
+          console.log("Autoplay was prevented: ", error);
+          playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        });
+      }
     });
 
-  
     function createParticles() {
       const particlesContainer = document.querySelector('.particles');
       const particleCount = 30;
@@ -535,20 +794,16 @@
         const particle = document.createElement('div');
         particle.classList.add('particle');
         
- 
         const size = Math.random() * 10 + 5;
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
         
-   
         particle.style.left = `${Math.random() * 100}vw`;
         particle.style.top = `${Math.random() * 100}vh`;
         
-      
         const duration = Math.random() * 20 + 10;
         particle.style.animationDuration = `${duration}s`;
         
-
         particle.style.animationDelay = `${Math.random() * 5}s`;
         
         particlesContainer.appendChild(particle);
@@ -556,39 +811,6 @@
     }
     
     createParticles();
-
-    const terminalText = document.getElementById('terminal-text');
-    const messages = [
-      "Welcome to MrCitrix's terminal...",
-      "Loading projects...",
-      "Running npm install...",
-      "import info from brain",
-      "def hello_world():",
-      "    return 'Hello :D'",
-      "Starting development server...",
-      "Server running at http://localhost:2468"
-    ];
-
-    let messageIndex = 0;
-    let charIndex = 0;
-
-    function typeText() {
-      if (messageIndex < messages.length) {
-        if (charIndex < messages[messageIndex].length) {
-          terminalText.innerHTML += messages[messageIndex].charAt(charIndex);
-          charIndex++;
-          setTimeout(typeText, 50);
-        } else {
-          terminalText.innerHTML += '<br>';
-          messageIndex++;
-          charIndex = 0;
-          setTimeout(typeText, 500);
-        }
-      }
-    }
-
-    setTimeout(typeText, 2000);
-
 
     const themeToggle = document.querySelector('.theme-toggle');
     themeToggle.addEventListener('click', () => {
@@ -601,7 +823,6 @@
       
       document.querySelector('.bg-image').style.transform = `translate(${-x * 20}px, ${-y * 20}px)`;
     });
-
 
     const skills = document.querySelectorAll('.skill');
     skills.forEach(skill => {
