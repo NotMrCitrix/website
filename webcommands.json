@@ -28,7 +28,7 @@
     "url": "command-maker/"
   },
   "citros-maker": {
-    "description": "Source custom versions of this site",
+    "description": "Create custom versions of this site",
     "url": "maker/"
   }
 }
