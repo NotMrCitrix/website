@@ -567,7 +567,7 @@
       const skipHint = document.getElementById('skipHint');
       const audio = document.getElementById('bgMusic');
       const bootSequence = [
-      "Loading site...",
+        "Loading site...",
         "npm run build",
         "npm start",
         "Starting development server... DO NOT USE IN PROD!",
@@ -685,12 +685,13 @@
       document.querySelector('.bg-image').style.transform = `translate(${-x * 20}px, ${-y * 20}px)`;
     });
 
-    // SKILL CLICK ANIMATION
+    // SKILL CLICK ANIMATION & POPUP
     const skills = document.querySelectorAll('.skill');
     skills.forEach(skill => {
       skill.addEventListener('click', () => {
         skill.style.transform = 'scale(1.1) rotate(5deg)';
         setTimeout(() => { skill.style.transform = ''; }, 500);
+        alert("none");
       });
     });
 
