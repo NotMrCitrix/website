@@ -546,14 +546,15 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // 3D CARD EFFECT FOR PROJECTS (Original Intensity)
+    // 3D CARD EFFECT FOR PROJECTS (Reduced Tilt Intensity)
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const rotateY = (x - rect.width / 2) / 10;
-        const rotateX = (y - rect.height / 2) / -10;
+        // Reduced intensity by dividing by 20 instead of 10
+        const rotateY = (x - rect.width / 2) / 20;
+        const rotateX = (y - rect.height / 2) / -20;
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       });
       card.addEventListener('mouseleave', () => {
