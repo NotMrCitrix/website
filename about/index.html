@@ -40,45 +40,11 @@
     }
 
     .site-url {
-      font-size: 1.2em;
-      color: #9B59B6;
-      text-decoration: none;
-      background: rgba(155, 89, 182, 0.1);
-      padding: 5px 15px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(155, 89, 182, 0.3);
-      backdrop-filter: blur(3px);
-      margin-top: 10px;
-    }
-
-    .site-url:hover {
-      background: rgba(155, 89, 182, 0.3);
-      transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 0 15px rgba(155, 89, 182, 0.5);
-    }
-
-    .cool-mode .site-url {
-      color: #59B6B6;
-      background: rgba(89, 155, 182, 0.1);
-      border: 1px solid rgba(89, 155, 182, 0.3);
-    }
-
-    .cool-mode .site-url:hover {
-      background: rgba(89, 155, 182, 0.3);
-      box-shadow: 0 0 15px rgba(89, 155, 182, 0.5);
+      display: none; /* Hiding the site URL completely */
     }
 
     .url-icon {
-      font-size: 1.1em;
-      color: #9B59B6;
-    }
-
-    .cool-mode .url-icon {
-      color: #59B6B6;
+      display: none; /* Hiding the URL icon */
     }
 
     /* Add glowing underline animation */
@@ -363,25 +329,9 @@
       color: #8e44ad;
     }
 
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(155, 89, 182, 0.3);
-      border: none;
-      color: white;
-      padding: 10px;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 100;
-      transition: all 0.3s ease;
-    }
-
-    .theme-toggle:hover {
-      transform: rotate(30deg);
-      background: rgba(155, 89, 182, 0.5);
-    }
-
+    /* Removed theme-toggle styles */
+    
+    /* Kept cool-mode styles for compatibility */
     .cool-mode .bg-image {
       filter: hue-rotate(180deg) blur(5px);
     }
@@ -610,9 +560,7 @@
   
   <div class="skip-hint" id="skipHint">Hold SPACE to speed up, SPACE+CLICK to skip</div>
 
-  <button class="theme-toggle" title="Toggle Cool Mode">
-    <i class="fas fa-snowflake"></i>
-  </button>
+  <!-- Removed the theme-toggle button -->
 
   <div class="music-player">
     <div class="album-cover">
@@ -636,10 +584,7 @@
   <div class="content-wrapper">
     <div class="site-header">
       <h1>Hi, I'm MrCitrix</h1>
-      <a href="https://mrcitrix.xyz" class="site-url glowing-underline">
-        <i class="fas fa-globe-americas url-icon"></i>
-        mrcitrix.xyz
-      </a>
+      <!-- Removed site URL -->
     </div>
     
     <div class="nav">
@@ -882,11 +827,8 @@
     
     createParticles();
 
-    const themeToggle = document.querySelector('.theme-toggle');
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('cool-mode');
-    });
-
+    // Removed the theme toggle event listener
+    
     document.addEventListener('mousemove', (e) => {
       const x = e.clientX / window.innerWidth;
       const y = e.clientY / window.innerHeight;
