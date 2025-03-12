@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>MrCitrix's Interactive Portfolio</title>
+  <title>MrCitrix's site (cooler)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     /* Base Styles */
@@ -483,6 +483,7 @@
       <p>Currently learning <code>React</code> and backend development with <code>Flask</code></p>
     </section>
 
+    <!-- The skills section now triggers an alert only when clicked directly on the container -->
     <section id="skills" class="skills">
       <div class="skill reveal">Python</div>
       <div class="skill reveal">HTML/CSS</div>
@@ -545,14 +546,15 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // 3D CARD EFFECT FOR PROJECTS (Original Intensity)
+    // 3D CARD EFFECT FOR PROJECTS (Reduced Tilt Intensity)
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        const rotateY = (x - rect.width / 2) / 5;
-        const rotateX = (y - rect.height / 2) / -5;
+        // Reduced intensity by dividing by 20 instead of 10
+        const rotateY = (x - rect.width / 2) / 40;
+        const rotateX = (y - rect.height / 2) / -40;
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
       });
       card.addEventListener('mouseleave', () => {
@@ -567,11 +569,12 @@
       const skipHint = document.getElementById('skipHint');
       const audio = document.getElementById('bgMusic');
       const bootSequence = [
-        "Initializing system...",
-        "Loading core modules...",
-        "Starting interface engine...",
-        "Establishing secure connection...",
-        "System ready!"
+        "Loading site...",
+        "npm run build",
+        "npm start",
+        "Starting development server... DO NOT USE IN PROD!",
+        "Server running at http://localhost:8000",
+        "Connecting..."
       ];
       
       let currentLine = 0;
@@ -684,13 +687,13 @@
       document.querySelector('.bg-image').style.transform = `translate(${-x * 20}px, ${-y * 20}px)`;
     });
 
-    // SKILL CLICK ANIMATION
-    const skills = document.querySelectorAll('.skill');
-    skills.forEach(skill => {
-      skill.addEventListener('click', () => {
-        skill.style.transform = 'scale(1.1) rotate(5deg)';
-        setTimeout(() => { skill.style.transform = ''; }, 500);
-      });
+    // Attach popup alert only on the skills section container.
+    const skillsSection = document.getElementById('skills');
+    skillsSection.addEventListener('click', (e) => {
+      // Trigger only if the click is directly on the container (not a child element)
+      if (e.currentTarget === e.target) {
+        alert("none");
+      }
     });
 
     // SMOOTH SCROLL FOR NAV LINKS (except Contact)
