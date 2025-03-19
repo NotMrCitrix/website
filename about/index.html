@@ -7,7 +7,6 @@
   <title>MrCitrix's site (cooler)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* Base Styles */
     body {
       background-color: #121212;
       color: #e0e0e0;
@@ -16,13 +15,10 @@
       padding: 0;
       overflow-x: hidden;
       min-height: 100vh;
-      /* Hide the default cursor to use our custom one */
       cursor: none;
       position: relative;
     }
 
-   
-    /* Music Player (black glow removed) */
     .music-player {
       position: fixed;
       bottom: 20px;
@@ -97,14 +93,13 @@
       width: 60px;
     }
 
-    /* Background & Particles */
     .bg-image {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: url("bg.png") no-repeat center center fixed;
+      background: url("/api/placeholder/1920/1080") no-repeat center center fixed;
       background-size: cover;
       filter: blur(5px);
       z-index: -2;
@@ -133,7 +128,6 @@
       100% { transform: translateY(-100vh) translateX(100px) rotate(360deg); opacity: 0; }
     }
 
-    /* Content Wrapper */
     .content-wrapper {
       background: rgba(0, 0, 0, 0.7);
       padding: 30px;
@@ -150,7 +144,6 @@
       transform: translateY(-5px);
     }
 
-    /* Site Header & Navigation */
     .site-header {
       position: relative;
       display: flex;
@@ -161,7 +154,6 @@
     .site-header h1 {
       margin-bottom: 5px;
     }
-    /* Animated Gradient Title */
     .gradient-text {
       background: linear-gradient(45deg, #9B59B6, #59B6B6, #9B59B6);
       background-size: 200% 200%;
@@ -194,7 +186,6 @@
       transform: translateY(-3px);
     }
 
-    /* Reveal Animations for Scroll */
     .reveal {
       opacity: 0;
       transform: translateY(30px);
@@ -205,7 +196,6 @@
       transform: translateY(0);
     }
 
-    /* About, Skills, Terminal, and Projects */
     section {
       margin-bottom: 30px;
     }
@@ -289,7 +279,6 @@
       50% { opacity: 0; }
     }
 
-    /* Projects – 3D Card Effect */
     .project-card {
       transform-style: preserve-3d;
       transition: all 0.5s ease;
@@ -314,7 +303,6 @@
       opacity: 0.8;
     }
 
-    /* Social & Attribution */
     .social-icons {
       margin-top: 30px;
       display: flex;
@@ -345,7 +333,6 @@
       background: transparent;
     }
 
-    /* Custom Cursor – Original Style with Click Effect */
     .custom-cursor {
       position: fixed;
       width: 20px;
@@ -361,7 +348,6 @@
       transform: scale(1.5);
       background: rgba(155, 89, 182, 0.5);
     }
-    /* Click effect for the custom cursor */
     .custom-cursor.click-effect {
       animation: clickAnimation 0.3s ease;
     }
@@ -373,16 +359,13 @@
   </style>
 </head>
 <body>
-  <!-- Audio Player (autoplay removed, will be played after loading) -->
   <audio id="bgMusic" loop>
     <source src="https://github.com/NotMrCitrix/website/raw/refs/heads/main/about/song.mp3" type="audio/mp3" />
     Your browser does not support the audio element.
   </audio>
 
-  <!-- Custom Cursor -->
   <div class="custom-cursor"></div>
 
-  <!-- Music Player -->
   <div class="music-player">
     <div class="album-cover">
       <img src="https://raw.githubusercontent.com/NotMrCitrix/website/refs/heads/main/about/baseimg.webp" alt="Mysterious Place by struumbug" />
@@ -399,11 +382,9 @@
     </div>
   </div>
 
-  <!-- Background Elements -->
   <div class="bg-image"></div>
   <div class="particles"></div>
 
-  <!-- Main Content -->
   <div class="content-wrapper">
     <div class="site-header">
       <h1 class="gradient-text">Hi, I'm MrCitrix</h1>
@@ -421,7 +402,6 @@
       <p>Currently learning <code>React</code> and backend development with <code>Flask</code></p>
     </section>
 
-    <!-- The skills section now triggers an alert only when clicked directly on the container -->
     <section id="skills" class="skills">
       <div class="skill reveal">Python</div>
       <div class="skill reveal">HTML/CSS</div>
@@ -474,7 +454,6 @@
   </div>
 
   <script>
-    // SCROLL REVEAL ANIMATIONS
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -484,13 +463,11 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // 3D CARD EFFECT FOR PROJECTS (Reduced Tilt Intensity)
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        // Reduced intensity by dividing by 20 instead of 10
         const rotateY = (x - rect.width / 2) / 40;
         const rotateX = (y - rect.height / 2) / -40;
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
@@ -500,20 +477,43 @@
       });
     });
 
-    // LOADER & TERMINAL BOOT SEQUENCE + Start Music After Loading
     document.addEventListener('DOMContentLoaded', () => {
       const audio = document.getElementById('bgMusic');
       
-      // Start the terminal text animation as soon as DOM is loaded
       initTerminal();
       
-      // Start the audio
       audio.play().catch(e => {
         console.log("Audio autoplay prevented by browser. User interaction required.");
       });
+      
+      createParticles();
     });
 
-    // Terminal Text Animation - Updated to display the specific messages
+    function createParticles() {
+      const particlesContainer = document.querySelector('.particles');
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        const size = Math.random() * 10 + 5;
+        const startPositionX = Math.random() * window.innerWidth;
+        const startPositionY = Math.random() * window.innerHeight + window.innerHeight;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 5;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${startPositionX}px`;
+        particle.style.bottom = `${-startPositionY}px`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
     function initTerminal() {
       const terminalText = document.getElementById('terminal-text');
       const messages = [
@@ -530,30 +530,25 @@
       
       function typeTerminalText() {
         if (messageIndex < messages.length) {
-          // Add line prefix at the start of each line
           if (charIndex === 0) {
             terminalText.innerHTML += messageIndex > 0 ? '<br>> ' : '> ';
           }
           
-          // Type the current character
           if (charIndex < messages[messageIndex].length) {
             terminalText.innerHTML += messages[messageIndex].charAt(charIndex);
             charIndex++;
-            setTimeout(typeTerminalText, 50); // Speed of typing each character
+            setTimeout(typeTerminalText, 50);
           } else {
-            // Move to next message
             messageIndex++;
             charIndex = 0;
-            setTimeout(typeTerminalText, 500); // Delay between messages
+            setTimeout(typeTerminalText, 500);
           }
         }
       }
       
-      // Start the terminal typing animation
       setTimeout(typeTerminalText, 500);
     }
 
-    // MUSIC PLAYER CONTROLS
     const audio = document.getElementById('bgMusic');
     const playPauseBtn = document.getElementById('playPauseBtn');
     const volumeControl = document.getElementById('volumeControl');
@@ -572,23 +567,19 @@
       audio.volume = volumeControl.value;
     });
 
-    // PARALLAX EFFECT FOR BACKGROUND IMAGE
     document.addEventListener('mousemove', (e) => {
       const x = e.clientX / window.innerWidth;
       const y = e.clientY / window.innerHeight;
       document.querySelector('.bg-image').style.transform = `translate(${-x * 20}px, ${-y * 20}px)`;
     });
 
-    // Attach popup alert only on the skills section container.
     const skillsSection = document.getElementById('skills');
     skillsSection.addEventListener('click', (e) => {
-      // Trigger only if the click is directly on the container (not a child element)
       if (e.currentTarget === e.target) {
         alert("none");
       }
     });
 
-    // SMOOTH SCROLL FOR NAV LINKS (except Contact)
     document.querySelectorAll('a.nav-link:not(#contactLink)').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
@@ -598,7 +589,6 @@
       });
     });
 
-    // CUSTOM CURSOR
     const cursor = document.querySelector('.custom-cursor');
     document.addEventListener('mousemove', (e) => {
       cursor.style.left = `${e.clientX - cursor.offsetWidth/2}px`;
@@ -615,7 +605,6 @@
       }, 300);
     });
 
-    // CONTACT LINK POPUP
     document.getElementById("contactLink").addEventListener("click", function(e) {
       e.preventDefault();
       alert("no");
