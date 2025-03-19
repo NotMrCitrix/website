@@ -21,59 +21,7 @@
       position: relative;
     }
 
-    /* Loader Styles */
-    .loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #121212;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      transition: opacity 0.1s ease, visibility 0.1s ease;
-    }
-    .loader.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
-    .loader-content {
-      text-align: center;
-      font-family: 'Courier New', monospace;
-      color: #0f0;
-      background: #000;
-      padding: 20px;
-      border-radius: 5px;
-      width: 80%;
-      max-width: 600px;
-    }
-    .loader-text {
-      text-align: left;
-      white-space: pre-line;
-      line-height: 1.5;
-    }
-
-    /* Skip Hint */
-    .skip-hint {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(155, 89, 182, 0.7);
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-size: 0.9em;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 1001;
-    }
-    .skip-hint.visible {
-      opacity: 1;
-    }
-
+   
     /* Music Player (black glow removed) */
     .music-player {
       position: fixed;
@@ -431,18 +379,8 @@
     Your browser does not support the audio element.
   </audio>
 
-  <!-- Loader -->
-  <div class="loader">
-    <div class="loader-content">
-      <div class="loader-text" id="loaderText"></div>
-    </div>
-  </div>
-
   <!-- Custom Cursor -->
   <div class="custom-cursor"></div>
-
-  <!-- Skip Hint -->
-  <div class="skip-hint" id="skipHint">Hold SPACE to speed up, SPACE+CLICK to skip</div>
 
   <!-- Music Player -->
   <div class="music-player">
@@ -564,11 +502,21 @@
 
     // LOADER & TERMINAL BOOT SEQUENCE + Start Music After Loading
     document.addEventListener('DOMContentLoaded', () => {
-      const loaderText = document.getElementById('loaderText');
-      const loader = document.querySelector('.loader');
-      const skipHint = document.getElementById('skipHint');
       const audio = document.getElementById('bgMusic');
-      const bootSequence = [
+      
+      // Start the terminal text animation as soon as DOM is loaded
+      initTerminal();
+      
+      // Start the audio
+      audio.play().catch(e => {
+        console.log("Audio autoplay prevented by browser. User interaction required.");
+      });
+    });
+
+    // Terminal Text Animation - Updated to display the specific messages
+    function initTerminal() {
+      const terminalText = document.getElementById('terminal-text');
+      const messages = [
         "Loading site...",
         "npm run build",
         "npm start",
@@ -577,89 +525,33 @@
         "Connecting..."
       ];
       
-      let currentLine = 0;
-      let currentChar = 0;
-      let isSpaceDown = false;
-      let hintTimeout;
-
-      function typeBootSequence() {
-        if (currentLine < bootSequence.length) {
-          if (currentChar === 0) {
-            loaderText.innerHTML += currentLine > 0 ? '<br>> ' : '> ';
-          }
-          if (currentChar < bootSequence[currentLine].length) {
-            loaderText.innerHTML += bootSequence[currentLine].charAt(currentChar);
-            currentChar++;
-            const speed = isSpaceDown ? 5 : 50;
-            setTimeout(typeBootSequence, speed);
-          } else {
-            currentLine++;
-            currentChar = 0;
-            setTimeout(typeBootSequence, isSpaceDown ? 50 : 500);
-          }
-        } else {
-          setTimeout(() => {
-            loader.classList.add('hidden');
-            skipHint.classList.remove('visible');
-            audio.play(); // Start the song after loader completes
-            loader.remove();
-          }, 800);
-        }
-      }
-      typeBootSequence();
-
-      // Show skip hint after a brief delay
-      hintTimeout = setTimeout(() => {
-        skipHint.classList.add('visible');
-        setTimeout(() => skipHint.classList.remove('visible'), 5000);
-      }, 1500);
-
-      document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' && document.body.contains(loader)) {
-          isSpaceDown = true;
-          e.preventDefault();
-          clearTimeout(hintTimeout);
-          skipHint.classList.add('visible');
-        }
-      });
-      document.addEventListener('keyup', (e) => {
-        if (e.code === 'Space') {
-          isSpaceDown = false;
-        }
-      });
-      document.addEventListener('click', (e) => {
-        if (isSpaceDown && document.body.contains(loader)) {
-          currentLine = bootSequence.length;
-          loaderText.innerHTML = bootSequence.map(line => `> ${line}`).join('<br>');
-          loader.classList.add('hidden');
-          skipHint.classList.remove('visible');
-          audio.play();
-          loader.remove();
-        }
-      });
-
-      // Terminal Text Animation (mirrors boot sequence)
-      const terminalText = document.getElementById('terminal-text');
       let messageIndex = 0;
       let charIndex = 0;
+      
       function typeTerminalText() {
-        if (messageIndex < bootSequence.length) {
+        if (messageIndex < messages.length) {
+          // Add line prefix at the start of each line
           if (charIndex === 0) {
             terminalText.innerHTML += messageIndex > 0 ? '<br>> ' : '> ';
           }
-          if (charIndex < bootSequence[messageIndex].length) {
-            terminalText.innerHTML += bootSequence[messageIndex].charAt(charIndex);
+          
+          // Type the current character
+          if (charIndex < messages[messageIndex].length) {
+            terminalText.innerHTML += messages[messageIndex].charAt(charIndex);
             charIndex++;
-            setTimeout(typeTerminalText, isSpaceDown ? 5 : 50);
+            setTimeout(typeTerminalText, 50); // Speed of typing each character
           } else {
+            // Move to next message
             messageIndex++;
             charIndex = 0;
-            setTimeout(typeTerminalText, isSpaceDown ? 50 : 500);
+            setTimeout(typeTerminalText, 500); // Delay between messages
           }
         }
       }
-      setTimeout(typeTerminalText, 2000);
-    });
+      
+      // Start the terminal typing animation
+      setTimeout(typeTerminalText, 500);
+    }
 
     // MUSIC PLAYER CONTROLS
     const audio = document.getElementById('bgMusic');
@@ -716,7 +608,6 @@
       el.addEventListener('mouseenter', () => cursor.classList.add('cursor-active'));
       el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-active'));
     });
-    // Click effect: add the "click-effect" class on any click and remove it shortly after.
     document.addEventListener('click', () => {
       cursor.classList.add('click-effect');
       setTimeout(() => {
