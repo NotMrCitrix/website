@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manga Reader</title>
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box;}
+    body {font-family:Arial,sans-serif; background:#1a1a1a; color:#f0f0f0; height:100vh; display:flex; flex-direction:column;}
+    .header {padding:10px; background:#2c2c2c; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 5px rgba(0,0,0,0.2);}
+    .title {font-size:18px; font-weight:bold;}
+    .controls {display:flex; gap:10px; align-items:center;}
+    .upload-area {display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; padding:20px; text-align:center;}
+    .upload-icon {font-size:50px; margin-bottom:15px;}
+    .upload-text {font-size:16px; margin-bottom:15px;}
+    .btn {padding:8px 16px; background:#4a90e2; color:white; border:none; border-radius:4px; cursor:pointer; font-size:14px;}
+    .btn:hover {background:#357abf;}
+    .reader-container {flex:1; display:none; flex-direction:column; position:relative; overflow:hidden;}
+    .scroll-container {flex:1; overflow-y:auto; background:#1a1a1a; scroll-behavior:smooth;}
+    .pages-container {display:flex; flex-direction:column; align-items:center; min-height:100%;}
+    .page-wrapper {position:relative; margin:10px 0; max-width:100%;}
+    .manga-page {max-width:95%; height:auto; display:block;}
+    .zoom-controls {position:fixed; right:15px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:8px; background:rgba(42,42,42,0.7); padding:8px; border-radius:15px; z-index:10;}
+    .zoom-btn {background:#4a90e2; color:white; border:none; width:35px; height:35px; border-radius:50%; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:18px; font-weight:bold;}
+    .zoom-level {position:fixed; top:60px; right:15px; background:rgba(42,42,42,0.7); padding:5px 10px; border-radius:10px; font-size:12px; z-index:10;}
+    .page-num {position:absolute; bottom:5px; right:5px; background:rgba(0,0,0,0.5); color:white; padding:2px 6px; border-radius:4px; font-size:12px;}
+    .file-name {margin-left:10px; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:150px;}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">Manga Reader</div>
+    <div class="controls">
+      <button id="open-folder-btn" class="btn">Open Folder</button>
+      <div id="current-file" class="file-name"></div>
+    </div>
+  </div>
+
+  <div id="upload-area" class="upload-area">
+    <div class="upload-icon">📁</div>
+    <div class="upload-text">Upload your manga folder to start reading</div>
+    <button id="upload-btn" class="btn">Upload Manga Folder</button>
+  </div>
+
+  <div id="reader-container" class="reader-container">
+    <div id="scroll-container" class="scroll-container">
+      <div id="pages-container" class="pages-container"></div>
+    </div>
+
+    <div class="zoom-controls">
+      <button id="zoom-in" class="zoom-btn">+</button>
+      <button id="zoom-reset" class="zoom-btn">↺</button>
+      <button id="zoom-out" class="zoom-btn">-</button>
+    </div>
+    
+    <div id="zoom-level" class="zoom-level">Zoom: 100%</div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const uploadArea = document.getElementById('upload-area');
+      const readerContainer = document.getElementById('reader-container');
+      const uploadBtn = document.getElementById('upload-btn');
+      const openFolderBtn = document.getElementById('open-folder-btn');
+      const pagesContainer = document.getElementById('pages-container');
+      const scrollContainer = document.getElementById('scroll-container');
+      const zoomIn = document.getElementById('zoom-in');
+      const zoomOut = document.getElementById('zoom-out');
+      const zoomReset = document.getElementById('zoom-reset');
+      const zoomLevelIndicator = document.getElementById('zoom-level');
+      const currentFileName = document.getElementById('current-file');
+
+      let images = [];
+      let zoomLevel = 1;
+      let loadedImages = [];
+      let visiblePages = new Set();
+      let currentPage = 0;
+      
+      function handleFolderUpload(event) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+        
+        images = Array.from(files)
+          .filter(file => file.type.startsWith('image/'))
+          .sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}));
+        
+        if (images.length === 0) {
+          alert('No image files found!');
+          return;
+        }
+        
+        uploadArea.style.display = 'none';
+        readerContainer.style.display = 'flex';
+        currentFileName.textContent = images[0].name;
+        
+        loadImages();
+      }
+      
+      function loadImages() {
+        pagesContainer.innerHTML = '';
+        loadedImages = [];
+        
+        // Pre-load initial batch of images
+        const initialBatch = Math.min(5, images.length);
+        for (let i = 0; i < initialBatch; i++) {
+          createPageElement(i);
+        }
+        
+        // Set up intersection observer to detect which pages are visible
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            const pageIndex = parseInt(entry.target.dataset.index);
+            
+            if (entry.isIntersecting) {
+              visiblePages.add(pageIndex);
+              currentPage = pageIndex;
+              currentFileName.textContent = images[pageIndex].name;
+              
+              // Load more images when approaching end
+              if (pageIndex >= loadedImages.length - 3) {
+                loadMoreImages(3);
+              }
+            } else {
+              visiblePages.delete(pageIndex);
+            }
+          });
+        }, {threshold: 0.1});
+        
+        // Observe all page elements
+        function observePages() {
+          document.querySelectorAll('.page-wrapper').forEach(page => {
+            observer.observe(page);
+          });
+        }
+        
+        observePages();
+        scrollContainer.addEventListener('scroll', checkScrollPosition);
+      }
+      
+      function createPageElement(index) {
+        if (loadedImages.includes(index)) return;
+        
+        const wrappedIndex = ((index % images.length) + images.length) % images.length;
+        const file = images[wrappedIndex];
+        
+        const pageWrapper = document.createElement('div');
+        pageWrapper.className = 'page-wrapper';
+        pageWrapper.dataset.index = wrappedIndex;
+        
+        const img = document.createElement('img');
+        img.className = 'manga-page';
+        img.alt = `Page ${wrappedIndex + 1}`;
+        
+        const pageNum = document.createElement('div');
+        pageNum.className = 'page-num';
+        pageNum.textContent = `${wrappedIndex + 1}/${images.length}`;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          img.src = e.target.result;
+          img.style.transform = `scale(${zoomLevel})`;
+          img.style.transformOrigin = 'top center';
+        };
+        
+        reader.readAsDataURL(file);
+        
+        pageWrapper.appendChild(img);
+        pageWrapper.appendChild(pageNum);
+        pagesContainer.appendChild(pageWrapper);
+        
+        loadedImages.push(wrappedIndex);
+      }
+      
+      function loadMoreImages(count) {
+        const currentLength = loadedImages.length;
+        for (let i = 0; i < count; i++) {
+          const nextIndex = (currentLength + i) % images.length;
+          createPageElement(nextIndex);
+        }
+      }
+      
+      function checkScrollPosition() {
+        const scrollHeight = scrollContainer.scrollHeight;
+        const scrollTop = scrollContainer.scrollTop;
+        const clientHeight = scrollContainer.clientHeight;
+        
+        // Near bottom, load more images
+        if (scrollTop + clientHeight > scrollHeight - 500) {
+          loadMoreImages(3);
+        }
+        
+        // If we're at the very bottom, and we've loaded all images at least once,
+        // reset scroll position to continue the infinite loop
+        if (scrollTop + clientHeight >= scrollHeight - 10 && loadedImages.length >= images.length) {
+          // Add more pages before resetting scroll to create seamless experience
+          loadMoreImages(3);
+        }
+      }
+      
+      function setZoom(level) {
+        zoomLevel = Math.max(0.1, Math.min(level, 3));
+        document.querySelectorAll('.manga-page').forEach(img => {
+          img.style.transform = `scale(${zoomLevel})`;
+        });
+        zoomLevelIndicator.textContent = `Zoom: ${Math.round(zoomLevel * 100)}%`;
+      }
+      
+      uploadBtn.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.webkitdirectory = true;
+        input.addEventListener('change', handleFolderUpload);
+        input.click();
+      });
+      
+      openFolderBtn.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.webkitdirectory = true;
+        input.addEventListener('change', handleFolderUpload);
+        input.click();
+      });
+      
+      zoomIn.addEventListener('click', () => setZoom(zoomLevel + 0.1));
+      zoomOut.addEventListener('click', () => setZoom(zoomLevel - 0.1));
+      zoomReset.addEventListener('click', () => setZoom(1));
+      
+      document.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case '+': setZoom(zoomLevel + 0.1); break;
+          case '-': setZoom(zoomLevel - 0.1); break;
+          case '0': setZoom(1); break;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
