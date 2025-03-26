@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>citrOS Terminal</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #terminal {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        #input-line {
+            display: flex;
+            padding: 10px 20px;
+            background-color: #252525;
+        }
+        
+        #prompt {
+            color: #ffcc00;
+            margin-right: 10px;
+        }
+        
+        #command-input {
+            flex: 1;
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .output-line {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .prompt-text {
+            color: #ffcc00;
+        }
+        
+        .command-text {
+            color: #ffffff;
+        }
+        
+        .system-text {
+            color: #00aaff;
+        }
+        
+        .error-text {
+            color: #ff3333;
+        }
+        
+        .help-command {
+            color: #ffcc00;
+            font-weight: bold;
+        }
+        
+        .help-desc {
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div class="output-line system-text">
+Welcome to citrOS v1.3.0
+Type 'help' to see available commands.
+        </div>
+    </div>
+    <div id="input-line">
+        <div id="prompt">citros~$</div>
+        <input type="text" id="command-input" autofocus>
+    </div>
+
+    <script>
+        const terminal = document.getElementById('terminal');
+        const commandInput = document.getElementById('command-input');
+        
+        // Command storage
+        let commands = {};
+        let webCommands = {};
+        
+        // Load commands from JSON files
+        async function loadCommandsFromJSON() {
+            try {
+                // Load text commands
+                const cmdResponse = await fetch('commands.json');
+                if (cmdResponse.ok) {
+                    commands = await cmdResponse.json();
+                    addOutputLine('Commands loaded successfully.', 'system-text');
+                } else {
+                    addOutputLine('Failed to load commands.json', 'error-text');
+                }
+                
+                // Load web commands for start
+                const webCmdResponse = await fetch('webcommands.json');
+                if (webCmdResponse.ok) {
+                    webCommands = await webCmdResponse.json();
+                    addOutputLine('Web commands loaded successfully.', 'system-text');
+                } else {
+                    addOutputLine('Failed to load webcommands.json', 'error-text');
+                }
+            } catch (error) {
+                addOutputLine(`Error loading commands: ${error.message}`, 'error-text');
+            }
+        }
+        
+        // Add output line helper
+        function addOutputLine(text, className = '') {
+            const outputLine = document.createElement('div');
+            outputLine.className = `output-line ${className}`;
+            outputLine.innerHTML = text;
+            terminal.appendChild(outputLine);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        // Process command input
+        function processCommand() {
+            const commandLine = commandInput.value.trim();
+            if (commandLine === '') return;
+            
+            // Add command to terminal output
+            const commandOutput = document.createElement('div');
+            commandOutput.className = 'output-line';
+            commandOutput.innerHTML = `<span class="prompt-text">citros~$</span> <span class="command-text">${commandLine}</span>`;
+            terminal.appendChild(commandOutput);
+            
+            // Process the command
+            const cmdParts = commandLine.split(' ');
+            const cmd = cmdParts[0].toLowerCase();
+            const args = cmdParts.slice(1);
+            
+            let result;
+            
+            // Core commands handling (these always work regardless of JSON)
+            if (cmd === 'help') {
+                let output = 'Available commands:\n\n';
+                
+                // List all available commands from the JSON
+                for (const cmdName in commands) {
+                    output += `  <span class="help-command">${cmdName}</span> - <span class="help-desc">${commands[cmdName].description}</span>\n`;
+                }
+                
+                // Add the built-in start command
+                if (!commands.start) {
+                    output += `  <span class="help-command">start</span> - <span class="help-desc">Launch applications</span>\n`;
+                }
+                
+                // Add the built-in reload command
+                if (!commands.reload) {
+                    output += `  <span class="help-command">reload</span> - <span class="help-desc">Reload command configurations</span>\n`;
+                }
+                
+                // Display start subcommands
+                output += '\nStart subcommands:\n\n';
+                for (const cmd in webCommands) {
+                    output += `  <span class="help-command">start ${cmd}</span> - <span class="help-desc">${webCommands[cmd].description}</span>\n`;
+                }
+                
+                result = output;
+            } else if (cmd === 'clear') {
+                terminal.innerHTML = '';
+                result = '';
+            } else if (cmd === 'reload') {
+                loadCommandsFromJSON();
+                result = 'Command configurations reloaded.';
+            } else if (cmd === 'start') {
+                if (!args || args.length === 0) {
+                    result = '<span class="error-text">Error: Please specify what to start. Try "start about.html"</span>';
+                } else {
+                    const target = args[0];
+                    if (webCommands[target]) {
+                        window.open(webCommands[target].url, '_blank');
+                        result = `Launching ${target}...`;
+                    } else {
+                        result = `<span class="error-text">Error: Unknown target "${target}"</span>`;
+                    }
+                }
+            } 
+            // Normal JSON-defined commands
+            else if (commands[cmd]) {
+                const command = commands[cmd];
+                
+                // Process based on action or type
+                if (command.action === 'text' || command.text) {
+                    result = command.output || command.text;
+                } else if (command.action === 'date' || (command.type && command.type === 'date')) {
+                    const now = new Date();
+                    result = `Current date and time: ${now.toLocaleString()}`;
+                } else if (command.action === 'echo' || (command.type && command.type === 'echo')) {
+                    if (!args || args.length === 0) {
+                        result = 'Echo what?';
+                    } else {
+                        result = args.join(' ');
+                    }
+                } else {
+                    result = `Command ${cmd} is defined but has no valid action.`;
+                }
+            } else {
+                result = `<span class="error-text">Command not found: ${cmd}</span>`;
+            }
+            
+            // Display the result
+            if (result) {
+                const resultOutput = document.createElement('div');
+                resultOutput.className = 'output-line';
+                resultOutput.innerHTML = result;
+                terminal.appendChild(resultOutput);
+            }
+            
+            // Clear input and scroll to bottom
+            commandInput.value = '';
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        // Event listener for Enter key
+        commandInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                processCommand();
+            }
+        });
+        
+        // Auto-focus input when clicking anywhere in the terminal
+        document.body.addEventListener('click', function() {
+            commandInput.focus();
+        });
+        
+        // Load commands and initialize terminal
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadCommandsFromJSON();
+        });
+    </script>
+</body>
+</html>
