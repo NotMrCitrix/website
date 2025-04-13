@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decarrdify</title>
+    <style>
+        :root {
+            --primary-bg: #0f0e17;
+            --card-bg: #1a1825;
+            --accent-purple: #7f5af0;
+            --accent-blue: #4361ee;
+            --text-color: #fffffe;
+            --secondary-text: #94a1b2;
+            --error-color: #ff8e3c;
+            --success-color: #2cb67d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: var(--secondary-text);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(127, 90, 240, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            color: var(--text-color);
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 2px rgba(127, 90, 240, 0.3);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(127, 90, 240, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .result {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            padding: 1rem;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .preview {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 6px;
+            padding: 1rem;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow: auto;
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .info-box {
+            background-color: rgba(127, 90, 240, 0.1);
+            border-left: 4px solid var(--accent-purple);
+            padding: 1rem;
+            border-radius: 0 6px 6px 0;
+            margin: 1.5rem 0;
+        }
+        
+        .info-box h3 {
+            margin-bottom: 0.5rem;
+            color: var(--accent-purple);
+        }
+        
+        .info-box p {
+            margin-bottom: 0.5rem;
+            color: var(--secondary-text);
+        }
+        
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .glow {
+            position: absolute;
+            top: -120px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(127, 90, 240, 0.3) 0%, rgba(67, 97, 238, 0.1) 40%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .glow2 {
+            position: absolute;
+            bottom: -150px;
+            right: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(67, 97, 238, 0.3) 0%, rgba(127, 90, 240, 0.1) 40%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: var(--secondary-text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-purple);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        #status {
+            flex-grow: 1;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .checkbox-container input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: var(--accent-purple);
+            width: 18px;
+            height: 18px;
+        }
+        
+        .debug-section {
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .debug-section h3 {
+            margin-bottom: 0.5rem;
+            color: var(--accent-purple);
+        }
+        
+        footer {
+            margin-top: 2rem;
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .action-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+    <div class="glow2"></div>
+    
+    <div class="container">
+        <h1 class="title">Decarrdify</h1>
+        <p class="subtitle">Remove Carrd credits and fix all asset links</p>
+        
+        <div class="card">
+            <div class="form-group">
+                <label for="urlInput" class="form-label">Enter your Carrd website URL:</label>
+                <input type="url" id="urlInput" class="form-control" placeholder="https://your-site.carrd.co">
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="convertLinks" checked>
+                <label for="convertLinks">Convert relative links to absolute URLs</label>
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="debugMode">
+                <label for="debugMode">Enable debug mode</label>
+            </div>
+            
+            <button id="fetchBtn" class="btn">Fetch & Process</button>
+            
+            <div id="loadingIndicator" style="display: none; margin-top: 1rem; text-align: center;">
+                <div class="loader"></div> <span id="loadingText">Fetching HTML...</span>
+            </div>
+            
+            <div class="info-box">
+                <h3>What this tool does:</h3>
+                <p>1. Removes the "Made with Carrd" credits footer</p>
+                <p>2. Converts all relative asset paths to absolute URLs (e.g., "/assets/image.jpg" -> "https://your-site.carrd.co/assets/image.jpg")</p>
+                <p>3. Provides a downloadable HTML file with all changes applied</p>
+            </div>
+            
+            <div id="debugSection" class="debug-section">
+                <h3>Debug Information:</h3>
+                <div id="debugInfo" class="preview"></div>
+            </div>
+            
+            <div id="resultContainer" class="result">
+                <div class="form-group">
+                    <label class="form-label">Preview (processed HTML):</label>
+                    <div id="preview" class="preview"></div>
+                </div>
+                
+                <div class="actions">
+                    <span id="status"></span>
+                    <div>
+                        <button id="downloadBtn" class="action-btn">Download HTML</button>
+                        <button id="viewSourceBtn" class="action-btn">View Raw HTML</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>For educational purposes only or something like that.</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlInput = document.getElementById('urlInput');
+            const convertLinks = document.getElementById('convertLinks');
+            const debugMode = document.getElementById('debugMode');
+            const fetchBtn = document.getElementById('fetchBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const loadingText = document.getElementById('loadingText');
+            const resultContainer = document.getElementById('resultContainer');
+            const preview = document.getElementById('preview');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const viewSourceBtn = document.getElementById('viewSourceBtn');
+            const status = document.getElementById('status');
+            const debugSection = document.getElementById('debugSection');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            let originalHtml = '';
+            let processedHtml = '';
+            
+            // Enable/disable debug mode
+            debugMode.addEventListener('change', () => {
+                debugSection.style.display = debugMode.checked ? 'block' : 'none';
+            });
+            
+            // Function to create a proxy URL to bypass CORS
+            function createProxyUrl(url) {
+                return `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+            }
+            
+            // Function to safely log debug information
+            function logDebug(message, data = '') {
+                if (debugMode.checked) {
+                    console.log(message, data);
+                    const time = new Date().toLocaleTimeString();
+                    debugInfo.textContent += `[${time}] ${message}\n`;
+                    if (data) {
+                        if (typeof data === 'object') {
+                            debugInfo.textContent += JSON.stringify(data, null, 2) + '\n';
+                        } else {
+                            debugInfo.textContent += data + '\n';
+                        }
+                    }
+                    debugInfo.textContent += '---\n';
+                    debugInfo.scrollTop = debugInfo.scrollHeight;
+                }
+            }
+            
+            // Function to convert relative URLs to absolute URLs with RegExp instead of DOM parsing
+            function convertRelativeLinksToAbsolute(html, baseUrl) {
+                logDebug('Converting relative links to absolute URLs', { baseUrl });
+                
+                // Make sure baseUrl ends with a slash if it doesn't already
+                if (!baseUrl.endsWith('/')) {
+                    baseUrl += '/';
+                }
+                
+                // Get the base domain
+                const urlObj = new URL(baseUrl);
+                const baseDomain = urlObj.origin;
+                
+                logDebug('Base domain', baseDomain);
+                
+                try {
+                    // Handle src attributes (img, script, iframe, etc.)
+                    html = html.replace(/(<[^>]+\s+src=["'])([^"'http][^"']*)(["'][^>]*>)/gi, (match, prefix, url, suffix) => {
+                        if (url.startsWith('/')) {
+                            logDebug(`Converting src: ${url} -> ${baseDomain}${url}`);
+                            return `${prefix}${baseDomain}${url}${suffix}`;
+                        } else {
+                            logDebug(`Converting src: ${url} -> ${baseUrl}${url}`);
+                            return `${prefix}${baseUrl}${url}${suffix}`;
+                        }
+                    });
+                    
+                    // Handle href attributes (a, link, etc.)
+                    html = html.replace(/(<[^>]+\s+href=["'])([^"'http#javascript:mailto:][^"']*)(["'][^>]*>)/gi, (match, prefix, url, suffix) => {
+                        if (url.startsWith('/')) {
+                            logDebug(`Converting href: ${url} -> ${baseDomain}${url}`);
+                            return `${prefix}${baseDomain}${url}${suffix}`;
+                        } else if (!url.startsWith('#')) {
+                            logDebug(`Converting href: ${url} -> ${baseUrl}${url}`);
+                            return `${prefix}${baseUrl}${url}${suffix}`;
+                        }
+                        return match;
+                    });
+                    
+                    // Handle background images in style attributes
+                    html = html.replace(/(<[^>]+\s+style=["'][^"']*url\()['"]?([^"'http][^"')]*?)['"]?(\)[^"']*["'][^>]*>)/gi, (match, prefix, url, suffix) => {
+                        if (url.startsWith('/')) {
+                            logDebug(`Converting inline style bg: ${url} -> ${baseDomain}${url}`);
+                            return `${prefix}"${baseDomain}${url}"${suffix}`;
+                        } else {
+                            logDebug(`Converting inline style bg: ${url} -> ${baseUrl}${url}`);
+                            return `${prefix}"${baseUrl}${url}"${suffix}`;
+                        }
+                    });
+                    
+                    // Handle background images in style tags
+                    html = html.replace(/(url\()['"]?([^"'http][^"')]*?)['"]?(\))/gi, (match, prefix, url, suffix) => {
+                        if (url.startsWith('/')) {
+                            logDebug(`Converting CSS url: ${url} -> ${baseDomain}${url}`);
+                            return `${prefix}"${baseDomain}${url}"${suffix}`;
+                        } else {
+                            logDebug(`Converting CSS url: ${url} -> ${baseUrl}${url}`);
+                            return `${prefix}"${baseUrl}${url}"${suffix}`;
+                        }
+                    });
+                    
+                    logDebug('Conversion completed');
+                } catch (error) {
+                    logDebug('Error during conversion:', error.message);
+                    console.error('Error during conversion:', error);
+                }
+                
+                return html;
+            }
+            
+            // Fetch button click event
+            fetchBtn.addEventListener('click', async () => {
+                const url = urlInput.value.trim();
+                
+                if (!url) {
+                    status.textContent = 'Please enter a valid URL.';
+                    status.style.color = 'var(--error-color)';
+                    return;
+                }
+                
+                // Clear debug info
+                if (debugMode.checked) {
+                    debugInfo.textContent = '';
+                }
+                
+                try {
+                    // Show loading
+                    fetchBtn.disabled = true;
+                    loadingIndicator.style.display = 'block';
+                    loadingText.textContent = 'Fetching HTML...';
+                    resultContainer.style.display = 'none';
+                    
+                    logDebug('Fetching HTML from URL', url);
+                    
+                    // Fetch the HTML
+                    const proxyUrl = createProxyUrl(url);
+                    logDebug('Using proxy URL', proxyUrl);
+                    
+                    const response = await fetch(proxyUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    originalHtml = await response.text();
+                    logDebug('Original HTML length', originalHtml.length);
+                    
+                    // Process the HTML
+                    let modified = false;
+                    processedHtml = originalHtml;
+                    
+                    // Remove Carrd credits
+                    loadingText.textContent = 'Removing credits...';
+                    logDebug('Removing Carrd credits');
+                    
+                    const creditsPattern = /<div id="credits" class="icc-credits">[\s\S]*?<\/div>/g;
+                    const creditsMatches = processedHtml.match(creditsPattern);
+                    logDebug('Credits matches', creditsMatches);
+                    
+                    if (creditsMatches) {
+                        processedHtml = processedHtml.replace(creditsPattern, '');
+                        modified = true;
+                        logDebug('Credits removed');
+                    } else {
+                        logDebug('No credits found');
+                    }
+                    
+                    // Convert relative URLs to absolute if the checkbox is checked
+                    if (convertLinks.checked) {
+                        loadingText.textContent = 'Converting asset links...';
+                        processedHtml = convertRelativeLinksToAbsolute(processedHtml, url);
+                        modified = true;
+                    }
+                    
+                    // Check if we still have HTML content
+                    if (!processedHtml || processedHtml.trim().length === 0) {
+                        throw new Error('Processing resulted in empty HTML');
+                    }
+                    
+                    // Display a preview of the HTML content
+                    loadingText.textContent = 'Generating preview...';
+                    const previewText = processedHtml.length > 2000 
+                        ? processedHtml.substring(0, 2000) + '...' 
+                        : processedHtml;
+                    
+                    preview.textContent = previewText;
+                    resultContainer.style.display = 'block';
+                    
+                    // Show success message
+                    if (modified) {
+                        status.textContent = 'Processing completed successfully!';
+                        status.style.color = 'var(--success-color)';
+                    } else {
+                        status.textContent = 'No changes were needed or could be made.';
+                        status.style.color = 'var(--secondary-text)';
+                    }
+                    
+                    logDebug('Processed HTML length', processedHtml.length);
+                    
+                } catch (error) {
+                    console.error(error);
+                    logDebug('Error', error.message);
+                    status.textContent = `Error: ${error.message}`;
+                    status.style.color = 'var(--error-color)';
+                } finally {
+                    // Hide loading
+                    fetchBtn.disabled = false;
+                    loadingIndicator.style.display = 'none';
+                }
+            });
+            
+            // Download button click event
+            downloadBtn.addEventListener('click', () => {
+                if (!processedHtml) return;
+                
+                try {
+                    logDebug('Preparing download');
+                    
+                    // Create a blob from the HTML content
+                    const blob = new Blob([processedHtml], { type: 'text/html;charset=utf-8' });
+                    
+                    // Create a temporary URL for the blob
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Create a temporary link element
+                    const a = document.createElement('a');
+                    a.href = url;
+                    
+                    // Extract filename from URL or use default
+                    let filename = 'carrd-site-processed.html';
+                    try {
+                        const urlObj = new URL(urlInput.value);
+                        const hostname = urlObj.hostname;
+                        if (hostname) {
+                            filename = `${hostname.split('.')[0]}-processed.html`;
+                        }
+                    } catch (e) {
+                        logDebug('Error extracting filename', e.message);
+                        // Use default filename if URL parsing fails
+                    }
+                    
+                    a.download = filename;
+                    logDebug('Download filename', filename);
+                    
+                    // Trigger the download
+                    document.body.appendChild(a);
+                    a.click();
+                    
+                    // Clean up
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    
+                    logDebug('Download initiated');
+                } catch (error) {
+                    console.error('Download error:', error);
+                    logDebug('Download error', error.message);
+                    status.textContent = `Download error: ${error.message}`;
+                    status.style.color = 'var(--error-color)';
+                }
+            });
+            
+            // View source button click event
+            viewSourceBtn.addEventListener('click', () => {
+                if (!processedHtml) return;
+                
+                try {
+                    // Open a new window with the raw HTML
+                    const newWindow = window.open();
+                    newWindow.document.write(`
+                        <html>
+                            <head>
+                                <title>Raw HTML</title>
+                                <style>
+                                    body {
+                                        background-color: #1a1825;
+                                        color: #ffffff;
+                                        font-family: monospace;
+                                        padding: 20px;
+                                        white-space: pre-wrap;
+                                        word-break: break-word;
+                                    }
+                                </style>
+                            </head>
+                            <body></body>
+                        </html>
+                    `);
+                    
+                    newWindow.document.body.textContent = processedHtml;
+                } catch (error) {
+                    console.error('View source error:', error);
+                    status.textContent = `View source error: ${error.message}`;
+                    status.style.color = 'var(--error-color)';
+                }
+            });
+            
+            // Add some fancy effects
+            const card = document.querySelector('.card');
+            const glow = document.querySelector('.glow');
+            const glow2 = document.querySelector('.glow2');
+            
+            document.addEventListener('mousemove', (e) => {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                
+                glow.style.transform = `translate(${x * 50}px, ${y * 50}px)`;
+                glow2.style.transform = `translate(${-x * 50}px, ${-y * 50}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
