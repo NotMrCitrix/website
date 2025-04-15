@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paper Minecraft Server Installer</title>
+  <!-- Dark mode styling -->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #ffffff;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 1em;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 1em;
+      border-bottom: 1px solid #333;
+    }
+    .tab-button {
+      flex: 1;
+      padding: 1em;
+      background: #1f1f1f;
+      border: none;
+      color: #e0e0e0;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .tab-button.active, .tab-button:hover {
+      background: #333;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    label {
+      display: block;
+      margin-top: 0.5em;
+    }
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.3em;
+      background: #1e1e1e;
+      border: 1px solid #555;
+      color: #e0e0e0;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    button {
+      padding: 0.7em 1.5em;
+      background: #333;
+      border: none;
+      color: #e0e0e0;
+      cursor: pointer;
+      margin-top: 1em;
+    }
+    button:hover {
+      background: #444;
+    }
+    .status {
+      background: #1e1e1e;
+      border: 1px solid #444;
+      padding: 0.5em;
+      margin-top: 1em;
+      height: 150px;
+      overflow-y: auto;
+      white-space: pre-line;
+      font-family: monospace;
+    }
+    .field-group {
+      margin-bottom: 1em;
+    }
+    .flex {
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+    }
+    .half {
+      flex: 1 1 45%;
+    }
+  </style>
+  <!-- Include JSZip from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Paper Minecraft Server Installer</h1>
+    <!-- Tab Buttons -->
+    <div class="tabs">
+      <button class="tab-button active" data-tab="download-tab">Download</button>
+      <button class="tab-button" data-tab="settings-tab">Settings</button>
+      <button class="tab-button" data-tab="install-tab">Install</button>
+    </div>
+    <!-- Download Tab -->
+    <div id="download-tab" class="tab-content active">
+      <h2>Download</h2>
+      <div class="field-group">
+        <label for="version-select">Minecraft Version:</label>
+        <select id="version-select"></select>
+      </div>
+      <div class="field-group">
+        <label for="build-select">Build Number:</label>
+        <select id="build-select"></select>
+      </div>
+      <div class="field-group">
+        <label for="install-dir">Installation Directory (for reference):</label>
+        <!-- This value will just be used in the summary -->
+        <input type="text" id="install-dir" value="PaperServer">
+      </div>
+      <div class="field-group">
+        <input type="checkbox" id="eula-check">
+        <label for="eula-check" style="display: inline;">I agree to the <a href="https://account.mojang.com/documents/minecraft_eula" target="_blank" style="color:#76baff;">Minecraft EULA</a></label>
+      </div>
+      <button id="download-next">Next</button>
+      <div class="status" id="download-status"></div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div id="settings-tab" class="tab-content">
+      <h2>Settings</h2>
+      <div class="field-group">
+        <label for="server-name">Server Name:</label>
+        <input type="text" id="server-name" value="My Paper Server">
+      </div>
+      <div class="field-group">
+        <label for="port">Server Port:</label>
+        <input type="text" id="port" value="25565">
+      </div>
+      <div class="field-group flex">
+        <div class="half">
+          <label for="gamemode">Game Mode:</label>
+          <select id="gamemode">
+            <option>survival</option>
+            <option>creative</option>
+            <option>adventure</option>
+            <option>spectator</option>
+          </select>
+        </div>
+        <div class="half">
+          <label for="difficulty">Difficulty:</label>
+          <select id="difficulty">
+            <option>peaceful</option>
+            <option selected>easy</option>
+            <option>normal</option>
+            <option>hard</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label for="max-players">Max Players:</label>
+        <input type="number" id="max-players" value="20">
+      </div>
+      <div class="field-group flex">
+        <div class="half">
+          <label for="ram-min">Minimum RAM:</label>
+          <input type="text" id="ram-min" value="1G" placeholder="e.g., 1G or 512M">
+        </div>
+        <div class="half">
+          <label for="ram-max">Maximum RAM:</label>
+          <input type="text" id="ram-max" value="2G" placeholder="e.g., 2G or 4G">
+        </div>
+      </div>
+      <div class="field-group">
+        <label for="advanced">Advanced server.properties (one per line: key=value):</label>
+        <textarea id="advanced">#Add any additional server.properties settings here
+spawn-protection=16
+view-distance=10
+enable-command-block=false</textarea>
+      </div>
+      <button id="settings-back">Back</button>
+      <button id="settings-next">Next</button>
+      <div class="status" id="settings-status"></div>
+    </div>
+
+    <!-- Install Tab -->
+    <div id="install-tab" class="tab-content">
+      <h2>Install (Generate ZIP)</h2>
+      <div class="field-group">
+        <pre id="summary">
+<!-- Summary details will appear here -->
+        </pre>
+      </div>
+      <button id="install-back">Back</button>
+      <button id="generate-zip">Generate ZIP</button>
+      <div class="status" id="install-status"></div>
+    </div>
+  </div>
+  
+  <!-- JavaScript -->
+  <script>
+    // API base URL for PaperMC
+    const apiBase = "https://api.papermc.io/v2";
+
+    // References to DOM elements
+    const tabs = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    const versionSelect = document.getElementById('version-select');
+    const buildSelect = document.getElementById('build-select');
+    const eulaCheck = document.getElementById('eula-check');
+    const installDirInput = document.getElementById('install-dir');
+    const downloadStatus = document.getElementById('download-status');
+    
+    const serverNameInput = document.getElementById('server-name');
+    const portInput = document.getElementById('port');
+    const gamemodeSelect = document.getElementById('gamemode');
+    const difficultySelect = document.getElementById('difficulty');
+    const maxPlayersInput = document.getElementById('max-players');
+    const ramMinInput = document.getElementById('ram-min');
+    const ramMaxInput = document.getElementById('ram-max');
+    const advancedTextarea = document.getElementById('advanced');
+    const settingsStatus = document.getElementById('settings-status');
+    
+    const summaryPre = document.getElementById('summary');
+    const installStatus = document.getElementById('install-status');
+    
+    // Navigation buttons
+    document.getElementById('download-next').addEventListener('click', () => {
+      if (!eulaCheck.checked) {
+        alert("You must accept the Minecraft EULA to continue.");
+      } else {
+        switchTab("settings-tab");
+      }
+    });
+    document.getElementById('settings-back').addEventListener('click', () => switchTab("download-tab"));
+    document.getElementById('settings-next').addEventListener('click', () => {
+      updateSummary();
+      switchTab("install-tab");
+    });
+    document.getElementById('install-back').addEventListener('click', () => switchTab("settings-tab"));
+    document.getElementById('generate-zip').addEventListener('click', generateZip);
+    
+    // Tab switching function
+    function switchTab(tabId) {
+      tabContents.forEach(content => {
+        if(content.id === tabId) {
+          content.classList.add("active");
+        } else {
+          content.classList.remove("active");
+        }
+      });
+    }
+    
+    // Fetch versions from API on load
+    async function fetchVersions() {
+      downloadStatus.textContent = "Fetching available versions...";
+      try {
+        const response = await fetch(`${apiBase}/projects/paper`);
+        if (!response.ok) throw new Error("Failed to fetch versions");
+        const data = await response.json();
+        const versions = data.versions || [];
+        // Sort versions (naively using reverse order – customize as needed)
+        versions.sort().reverse();
+        versionSelect.innerHTML = "";
+        versions.forEach(v => {
+          const option = document.createElement("option");
+          option.value = v;
+          option.textContent = v;
+          versionSelect.appendChild(option);
+        });
+        downloadStatus.textContent = `Loaded ${versions.length} versions.`;
+        // Auto-fetch builds for the first version
+        fetchBuilds(versionSelect.value);
+      } catch (err) {
+        downloadStatus.textContent = "Error: " + err.message;
+      }
+    }
+    
+    // Fetch builds for selected version
+    async function fetchBuilds(version) {
+      downloadStatus.textContent = `Fetching builds for version ${version}...`;
+      try {
+        const response = await fetch(`${apiBase}/projects/paper/versions/${version}`);
+        if (!response.ok) throw new Error("Failed to fetch builds");
+        const data = await response.json();
+        let builds = data.builds || [];
+        // Sort newest builds first
+        builds.sort((a, b) => b - a);
+        buildSelect.innerHTML = "";
+        builds.forEach(build => {
+          const option = document.createElement("option");
+          option.value = build;
+          option.textContent = build;
+          buildSelect.appendChild(option);
+        });
+        downloadStatus.textContent = `Loaded ${builds.length} builds for version ${version}.`;
+      } catch (err) {
+        downloadStatus.textContent = "Error: " + err.message;
+      }
+    }
+    
+    // Update builds when version changes
+    versionSelect.addEventListener("change", () => {
+      fetchBuilds(versionSelect.value);
+    });
+    
+    // Create installation summary
+    function updateSummary() {
+      const summary = `Paper Server Installation Summary:
+      
+Version: ${versionSelect.value}
+Build: ${buildSelect.value}
+Installation Directory: ${installDirInput.value}
+
+Server Settings:
+- Server Name: ${serverNameInput.value}
+- Port: ${portInput.value}
+- Game Mode: ${gamemodeSelect.value}
+- Difficulty: ${difficultySelect.value}
+- Max Players: ${maxPlayersInput.value}
+
+Java Settings:
+- Minimum RAM: ${ramMinInput.value}
+- Maximum RAM: ${ramMaxInput.value}
+
+EULA Accepted: ${eulaCheck.checked ? "Yes" : "No (Required)"}
+
+Advanced server.properties:
+${advancedTextarea.value}
+      `;
+      summaryPre.textContent = summary;
+    }
+    
+    // Generate ZIP file when "Generate ZIP" is clicked
+    async function generateZip() {
+      if (!eulaCheck.checked) {
+        alert("You must accept the Minecraft EULA.");
+        return;
+      }
+      
+      installStatus.textContent = "Starting ZIP generation...\n";
+      const zip = new JSZip();
+      const installDir = installDirInput.value; // used for reference in file names
+      
+      // Determine file names and settings
+      const version = versionSelect.value;
+      const build = buildSelect.value;
+      const jarFileName = `paper-${version}-${build}.jar`;
+      
+      // 1. Download the server jar file from Paper API
+      installStatus.textContent += `Downloading ${jarFileName}...\n`;
+      const jarUrl = `${apiBase}/projects/paper/versions/${version}/builds/${build}/downloads/${jarFileName}`;
+      try {
+        const jarResponse = await fetch(jarUrl);
+        if (!jarResponse.ok)
+          throw new Error(`Failed to download jar file. Status: ${jarResponse.status}`);
+        const jarBlob = await jarResponse.blob();
+        zip.file(jarFileName, jarBlob);
+        installStatus.textContent += "Server jar downloaded and added to ZIP.\n";
+      } catch (err) {
+        installStatus.textContent += "Error downloading jar: " + err.message + "\n";
+        return;
+      }
+      
+      // 2. Create start scripts
+      const minRam = ramMinInput.value;
+      const maxRam = ramMaxInput.value;
+      
+      // Windows batch file
+      const batchScript = `@echo off
+echo Starting Paper Server...
+java -Xms${minRam} -Xmx${maxRam} -jar ${jarFileName} nogui
+pause
+`;
+      zip.file("start_server.bat", batchScript);
+      
+      // Linux/macOS shell script
+      const shellScript = `#!/bin/bash
+echo "Starting Paper Server..."
+java -Xms${minRam} -Xmx${maxRam} -jar ${jarFileName} nogui
+`;
+      zip.file("start_server.sh", shellScript);
+      
+      installStatus.textContent += "Start scripts created.\n";
+      
+      // 3. Create the eula.txt file (with acceptance)
+      const eulaContent = `#By changing the setting below to TRUE you are indicating your agreement to the Minecraft EULA (https://account.mojang.com/documents/minecraft_eula).
+#Generated by Paper Server Installer on ${new Date().toLocaleString()}
+eula=true
+`;
+      zip.file("eula.txt", eulaContent);
+      installStatus.textContent += "eula.txt created.\n";
+      
+      // 4. Create server.properties file using settings and advanced text
+      let properties = {
+        "server-port": portInput.value,
+        "gamemode": gamemodeSelect.value,
+        "difficulty": difficultySelect.value,
+        "max-players": maxPlayersInput.value,
+        "motd": serverNameInput.value,
+      };
+      // Parse additional advanced properties (lines with key=value and not comments)
+      const advancedLines = advancedTextarea.value.split('\n');
+      advancedLines.forEach(line => {
+        line = line.trim();
+        if (line && !line.startsWith("#")) {
+          const parts = line.split('=');
+          if (parts.length >= 2) {
+            const key = parts[0].trim();
+            const value = parts.slice(1).join('=').trim();
+            properties[key] = value;
+          }
+        }
+      });
+      let serverProperties = `#Paper server properties
+#Generated by Paper Server Installer on ${new Date().toLocaleString()}
+`;
+      Object.entries(properties).forEach(([key, value]) => {
+        serverProperties += `${key}=${value}\n`;
+      });
+      zip.file("server.properties", serverProperties);
+      installStatus.textContent += "server.properties created.\n";
+      
+      // 5. Generate the ZIP and start download
+      installStatus.textContent += "Generating ZIP file...\n";
+      try {
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        const downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(zipBlob);
+        downloadLink.download = "paper_server_installation.zip";
+        downloadLink.click();
+        installStatus.textContent += "ZIP file generated and download initiated.\n";
+      } catch (err) {
+        installStatus.textContent += "Error generating ZIP: " + err.message;
+      }
+    }
+    
+    // Initialize the page: fetch versions
+    fetchVersions();
+  </script>
+</body>
+</html>
